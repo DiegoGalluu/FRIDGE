@@ -249,7 +249,7 @@ fun AplicacionFridge() {
             onDismissRequest = { mostrarAyuda = false },
             title = { Text("ayuda") },
             text = {
-                Text("usa inicio para ver resumen, despensa para controlar alimentos, compra para apuntar lo que falta e informe para generar la parte tecnica de psp")
+                Text("usa inicio para ver el resumen, despensa para controlar alimentos, compra para apuntar lo que falta e informe para revisar el estado de tu despensa")
             },
             confirmButton = {
                 TextButton(onClick = { mostrarAyuda = false }) { Text("entendido") }
