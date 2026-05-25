@@ -108,14 +108,12 @@ fun AplicacionFridge() {
     val listaProductos = remember { mutableStateListOf<Producto>() }
     val listaCompra = remember { mutableStateListOf<ItemCompra>() }
     val listaInformes = remember { mutableStateListOf<InformeDespensa>() }
-    var spoonacularApiKey by remember { mutableStateOf("") }
     var mostrarAyuda by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         listaProductos.addAll(AlmacenDatos.obtenerProductos(context))
         listaCompra.addAll(AlmacenDatos.obtenerCompra(context))
         listaInformes.addAll(AlmacenDatos.obtenerInformes(context))
-        spoonacularApiKey = AlmacenDatos.obtenerSpoonacularApiKey(context)
     }
 
     fun mostrarMensaje(texto: String) {
@@ -220,7 +218,6 @@ fun AplicacionFridge() {
                 productos = listaProductos,
                 compra = listaCompra,
                 informes = listaInformes,
-                spoonacularApiKey = spoonacularApiKey,
                 onGuardarProducto = { producto ->
                     guardarProductos(listaProductos + producto)
                     mostrarMensaje("Producto guardado")
@@ -255,10 +252,6 @@ fun AplicacionFridge() {
                 onInformeGenerado = { informe ->
                     guardarInformes(listOf(informe) + listaInformes)
                 },
-                onGuardarSpoonacularApiKey = { apiKey ->
-                    spoonacularApiKey = apiKey
-                    AlmacenDatos.guardarSpoonacularApiKey(context, apiKey)
-                },
                 onMostrarMensaje = { texto -> mostrarMensaje(texto) },
                 onNavegar = { ruta -> navegar(ruta) }
             )
@@ -286,7 +279,6 @@ private fun ContenidoNavegacion(
     productos: List<Producto>,
     compra: List<ItemCompra>,
     informes: List<InformeDespensa>,
-    spoonacularApiKey: String,
     onGuardarProducto: (Producto) -> Unit,
     onConsumirProducto: (Producto) -> Unit,
     onAnadirCompraDesdeProducto: (Producto) -> Unit,
@@ -295,7 +287,6 @@ private fun ContenidoNavegacion(
     onEliminarItemCompra: (ItemCompra, Boolean) -> Unit,
     onGenerarInforme: suspend () -> InformeDespensa,
     onInformeGenerado: (InformeDespensa) -> Unit,
-    onGuardarSpoonacularApiKey: (String) -> Unit,
     onMostrarMensaje: (String) -> Unit,
     onNavegar: (String) -> Unit
 ) {
@@ -340,8 +331,6 @@ private fun ContenidoNavegacion(
         composable(Rutas.RECETAS) {
             PantallaRecetas(
                 productos = productos,
-                apiKeyGuardada = spoonacularApiKey,
-                onGuardarApiKey = onGuardarSpoonacularApiKey,
                 onMostrarMensaje = onMostrarMensaje
             )
         }

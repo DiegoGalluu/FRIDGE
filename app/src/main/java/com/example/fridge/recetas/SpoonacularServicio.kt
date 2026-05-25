@@ -32,9 +32,10 @@ object SpoonacularServicio {
             .take(10)
     }
 
-    fun buscarRecetas(productos: List<Producto>, apiKey: String): List<RecetaSugerida> {
+    fun buscarRecetas(productos: List<Producto>): List<RecetaSugerida> {
         val ingredientes = prepararIngredientes(productos)
-        require(apiKey.isNotBlank()) { "Introduce una API key de Spoonacular." }
+        val apiKey = SpoonacularConfig.API_KEY
+        require(apiKey.isNotBlank()) { "La búsqueda de recetas no está configurada todavía." }
         require(ingredientes.isNotEmpty()) { "Añade productos a la despensa para buscar recetas." }
 
         val ingredientesParametro = ingredientes.joinToString(",") { ingrediente -> ingrediente.nombreBusqueda }

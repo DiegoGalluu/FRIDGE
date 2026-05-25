@@ -89,7 +89,7 @@ La app tiene seis pantallas principales:
 8. Entrar en Lista de la compra
 9. Marcar un ítem como comprado
 10. Entrar en Recetas
-11. Guardar una API key gratuita de Spoonacular
+11. Desplegar ingredientes disponibles
 12. Buscar recetas con los productos de la despensa
 13. Abrir el menú lateral
 14. Entrar en Informe de despensa
@@ -225,7 +225,7 @@ FRIDGE no es una demo tecnica aislada. Es una app sencilla para controlar alimen
 
 La parte visible para el usuario permite añadir alimentos, revisar caducidades y preparar una lista de la compra.
 
-La pantalla de recetas usa los productos guardados en la despensa y prioriza los proximos a caducar antes de llamar a Spoonacular. La API key se introduce desde la app y se guarda solo en el dispositivo con SharedPreferences.
+La pantalla de recetas usa los productos guardados en la despensa y prioriza los proximos a caducar antes de llamar a Spoonacular. La clave de Spoonacular se configura en `app/src/main/java/com/example/fridge/recetas/SpoonacularConfig.kt`, por lo que el usuario final no tiene que introducir ningun dato tecnico en la app.
 
 La parte de informe aprovecha esos mismos datos para cumplir PSP. Primero exporta la despensa a CSV, despues ejecuta procesos externos con ProcessBuilder y finalmente ejecuta pruebas con hilos y corrutinas.
 
