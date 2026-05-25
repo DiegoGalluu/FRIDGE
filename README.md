@@ -17,7 +17,7 @@ FRIDGE es una aplicacion Android para controlar los alimentos que hay en casa, e
 - Corrutinas
 - Channel de corrutinas
 
-## Puesta en marcha
+## Cómo ejecutar
 
 1. Abre Android Studio.
 2. Pulsa `Open`.
@@ -60,15 +60,18 @@ La app se organiza en seis pantallas principales:
 - Priorizar alimentos proximos a caducar en las sugerencias.
 - Generar un informe de despensa con resumen, plan de consumo y sugerencias de compra.
 
-## Flujo de uso
+## Flujo de demostración
 
 1. Revisa el resumen de inicio.
-2. Entra en `Mi despensa` para consultar alimentos guardados.
-3. Anade productos desde el boton flotante.
-4. Usa los filtros para localizar alimentos proximos o caducados.
-5. Marca alimentos como consumidos o anadelos a la compra.
-6. Consulta recetas con lo que ya tienes en casa.
-7. Revisa el informe para decidir que consumir primero y que comprar.
+2. Abre el menu lateral y entra en `Ayuda`.
+3. Pulsa `Introducir datos de ejemplo` para cargar una despensa variada.
+4. Entra en `Mi despensa` para consultar alimentos guardados.
+5. Usa los filtros para localizar alimentos proximos o caducados.
+6. Marca alimentos como consumidos o anadelos a la compra.
+7. Entra en `Recetas` y busca ideas con los productos disponibles.
+8. Toca una receta para ver ingredientes completos y pasos.
+9. Entra en `Informe de despensa` y pulsa `Actualizar informe`.
+10. Revisa el plan para hoy, los tiempos calculados y la ruta del archivo `resultados_YYYY-MM-DD_HH-mm-ss.md` generado en `Documentos/FRIDGE`.
 
 ## Recetas
 
