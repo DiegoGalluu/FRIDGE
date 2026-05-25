@@ -343,19 +343,19 @@ private fun generarInformeCompleto(context: android.content.Context, productos: 
     val resumenProcesos = GestorProcesos().generarInformeProcesos(archivo)
     val resumenHilos = kotlinx.coroutines.runBlocking { GestorHilos().ejecutarAnalisisHilosYCorrutinas(productos) }
 
-    val urgentes = productos.count { producto -> producto.caducaPronto() }
+    val proximos = productos.count { producto -> producto.estaProximoACaducar() }
     val caducados = productos.count { producto -> producto.estaCaducado() }
-    val masUrgente = productos.minByOrNull { producto -> producto.diasRestantes() }
+    val masProximo = productos.minByOrNull { producto -> producto.diasRestantes() }
     val recomendacion = when {
         productos.isEmpty() -> "anade productos para empezar a controlar tu despensa"
         caducados > 0 -> "revisa los productos caducados y anade recambios a la lista de la compra"
-        urgentes > 0 -> "consume primero los productos que caducan pronto"
+        proximos > 0 -> "consume primero los productos proximos a caducar"
         else -> "tu despensa esta controlada"
     }
 
     val textoResumen = buildString {
-        append("producto mas urgente ")
-        append(masUrgente?.nombre ?: "ninguno")
+        append("producto mas proximo a caducar ")
+        append(masProximo?.nombre ?: "ninguno")
         append("\n")
         append("recomendacion de compra ")
         append(recomendacion)
@@ -363,7 +363,7 @@ private fun generarInformeCompleto(context: android.content.Context, productos: 
 
     return InformeDespensa(
         totalProductos = productos.size,
-        productosUrgentes = urgentes,
+        productosProximos = proximos,
         productosCaducados = caducados,
         textoResumen = textoResumen,
         tiempoSecuencial = resumenProcesos.tiempoSecuencial + resumenHilos.tiempoSecuencial,

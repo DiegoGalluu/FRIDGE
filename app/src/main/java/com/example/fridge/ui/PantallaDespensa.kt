@@ -42,7 +42,7 @@ fun PantallaDespensa(
     var productoSeleccionado by remember { mutableStateOf<Producto?>(null) }
 
     val productosFiltrados = when (filtro) {
-        "pronto" -> productos.filter { producto -> producto.caducaPronto() }
+        "proximos" -> productos.filter { producto -> producto.estaProximoACaducar() }
         "caducados" -> productos.filter { producto -> producto.estaCaducado() }
         else -> productos
     }
@@ -55,7 +55,7 @@ fun PantallaDespensa(
         TituloSeccion("mi despensa")
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
             BotonFiltro("todos", filtro == "todos", Modifier.weight(1f)) { filtro = "todos" }
-            BotonFiltro("pronto", filtro == "pronto", Modifier.weight(1f)) { filtro = "pronto" }
+            BotonFiltro("proximos", filtro == "proximos", Modifier.weight(1f)) { filtro = "proximos" }
             BotonFiltro("caducados", filtro == "caducados", Modifier.weight(1f)) { filtro = "caducados" }
         }
 
@@ -120,7 +120,7 @@ private fun BotonFiltro(texto: String, seleccionado: Boolean, modifier: Modifier
 private fun TarjetaProducto(producto: Producto, onClick: () -> Unit) {
     val colorTexto = when {
         producto.estaCaducado() -> Color(0xFFC62828)
-        producto.caducaPronto() -> Color(0xFFEF6C00)
+        producto.estaProximoACaducar() -> Color(0xFFEF6C00)
         else -> Color(0xFF2E7D32)
     }
 

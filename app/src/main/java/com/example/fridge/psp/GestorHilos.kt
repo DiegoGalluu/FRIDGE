@@ -53,9 +53,9 @@ class GestorHilos {
         val hilo = Thread {
             try {
                 val caducados = productos.count { producto -> producto.estaCaducado() }
-                val urgentes = productos.count { producto -> producto.caducaPronto() }
+                val proximos = productos.count { producto -> producto.estaProximoACaducar() }
                 salida.append("productos caducados $caducados\n")
-                salida.append("productos urgentes $urgentes")
+                salida.append("productos proximos $proximos")
             } catch (e: Exception) {
                 estado = "error controlado"
                 correcto = false
@@ -84,7 +84,7 @@ class GestorHilos {
                 val sugeridos = productos
                     .filter { producto -> producto.cantidad <= 1 || producto.estaCaducado() }
                     .joinToString(", ") { producto -> producto.nombre }
-                if (sugeridos.isBlank()) "no hace falta comprar nada urgente" else "comprar $sugeridos"
+                if (sugeridos.isBlank()) "no hace falta comprar nada por ahora" else "comprar $sugeridos"
             }
             val salida = diferido.await()
             ResultadoTarea(
@@ -125,7 +125,7 @@ class GestorHilos {
                     eventos.add("consumidor recibe ${producto.nombre}")
                     val estado = when {
                         producto.estaCaducado() -> "caducado"
-                        producto.caducaPronto() -> "urgente"
+                        producto.estaProximoACaducar() -> "proximo"
                         else -> "correcto"
                     }
                     eventos.add("consumidor marca ${producto.nombre} como $estado")
@@ -203,7 +203,7 @@ class GestorHilos {
 
     private suspend fun generarCompraSugerida(productos: List<Producto>): List<String> {
         delay(80)
-        return productos.filter { producto -> producto.cantidad <= 1 || producto.caducaPronto() }.map { producto -> producto.nombre }
+        return productos.filter { producto -> producto.cantidad <= 1 || producto.estaProximoACaducar() }.map { producto -> producto.nombre }
     }
 
     // da formato a un resultado de tarea

@@ -66,7 +66,7 @@ La app tiene cinco pantallas principales:
 - Cargar productos de ejemplo
 - Anadir productos con formulario validado
 - Ver productos en tarjetas
-- Filtrar productos por todos, caducan pronto o caducados
+- Filtrar productos por todos, proximos a caducar o caducados
 - Marcar productos como consumidos
 - Anadir productos a la lista de la compra
 - Eliminar productos
@@ -81,7 +81,7 @@ La app tiene cinco pantallas principales:
 2. Pulsar cargar datos de ejemplo
 3. Entrar en mi despensa
 4. Ver las tarjetas de productos
-5. Probar el filtro caducan pronto
+5. Probar el filtro proximos a caducar
 6. Pulsar el boton flotante para anadir producto
 7. Guardar un producto nuevo
 8. Pulsar un producto y anadirlo a la lista de la compra

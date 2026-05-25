@@ -23,8 +23,8 @@ data class Producto(
     // indica si el producto ya esta caducado
     fun estaCaducado(): Boolean = diasRestantes() < 0
 
-    // indica si el producto debe revisarse pronto
-    fun caducaPronto(): Boolean = diasRestantes() in 0..3
+    // indica si el producto esta proximo a caducar
+    fun estaProximoACaducar(): Boolean = diasRestantes() in 0..3
 
     // devuelve un texto facil para el usuario
     fun textoCaducidad(): String {

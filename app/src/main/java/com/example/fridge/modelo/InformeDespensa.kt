@@ -7,7 +7,7 @@ data class InformeDespensa(
     val id: String = UUID.randomUUID().toString(),
     val fecha: Long = System.currentTimeMillis(),
     val totalProductos: Int,
-    val productosUrgentes: Int,
+    val productosProximos: Int,
     val productosCaducados: Int,
     val textoResumen: String,
     val tiempoSecuencial: Long,
@@ -21,7 +21,7 @@ data class InformeDespensa(
             .put("id", id)
             .put("fecha", fecha)
             .put("totalProductos", totalProductos)
-            .put("productosUrgentes", productosUrgentes)
+            .put("productosProximos", productosProximos)
             .put("productosCaducados", productosCaducados)
             .put("textoResumen", textoResumen)
             .put("tiempoSecuencial", tiempoSecuencial)
@@ -38,7 +38,10 @@ data class InformeDespensa(
                     id = objeto.optString("id", UUID.randomUUID().toString()),
                     fecha = objeto.optLong("fecha", System.currentTimeMillis()),
                     totalProductos = objeto.optInt("totalProductos", 0),
-                    productosUrgentes = objeto.optInt("productosUrgentes", 0),
+                    productosProximos = objeto.optInt(
+                        "productosProximos",
+                        objeto.optInt("productosUrgentes", 0)
+                    ),
                     productosCaducados = objeto.optInt("productosCaducados", 0),
                     textoResumen = objeto.optString("textoResumen", "sin resumen"),
                     tiempoSecuencial = objeto.optLong("tiempoSecuencial", 0L),

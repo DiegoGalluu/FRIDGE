@@ -22,10 +22,10 @@ Ejemplo de resumen generado:
 
 ```text
 total de productos 5
-productos que caducan pronto 3
+productos proximos a caducar 3
 productos caducados 0
-producto mas urgente pollo
-recomendacion de compra consume primero los productos que caducan pronto
+producto mas proximo a caducar pollo
+recomendacion de compra consume primero los productos proximos a caducar
 ```
 
 ## PSP RA1 procesos
@@ -172,7 +172,7 @@ Salida esperada:
 
 ```text
 productos caducados 0
-productos urgentes 3
+productos proximos 3
 estado finalizado
 correcto true
 ```
@@ -200,17 +200,17 @@ Salida esperada:
 ```text
 productor envia leche
 consumidor recibe leche
-consumidor marca leche como urgente
+consumidor marca leche como proximo
 productor envia tomate
 consumidor recibe tomate
-consumidor marca tomate como urgente
+consumidor marca tomate como proximo
 ```
 
 Explicacion:
 
 1. El productor envia productos al canal
 2. El consumidor recibe productos del canal
-3. El consumidor clasifica cada producto como correcto, urgente o caducado
+3. El consumidor clasifica cada producto como correcto, proximo o caducado
 
 ## PSP RA2 comparacion secuencial y concurrente
 

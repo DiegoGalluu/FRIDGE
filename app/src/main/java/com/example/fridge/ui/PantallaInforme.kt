@@ -79,7 +79,7 @@ fun PantallaInforme(
                     Spacer(modifier = Modifier.height(6.dp))
                     Text("fecha ${UtilFechas.formatearFecha(informe.fecha)}")
                     Text("total de productos ${informe.totalProductos}")
-                    Text("productos que caducan pronto ${informe.productosUrgentes}")
+                    Text("productos proximos a caducar ${informe.productosProximos}")
                     Text("productos caducados ${informe.productosCaducados}")
                     Text("tiempo de analisis secuencial ${informe.tiempoSecuencial} ms")
                     Text("tiempo de analisis concurrente ${informe.tiempoConcurrente} ms")

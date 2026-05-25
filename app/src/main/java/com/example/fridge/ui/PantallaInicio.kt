@@ -39,7 +39,7 @@ fun PantallaInicio(
     onVerInforme: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val urgentes = productos.count { producto -> producto.caducaPronto() }
+    val proximos = productos.count { producto -> producto.estaProximoACaducar() }
 
     Column(
         modifier = modifier
@@ -73,7 +73,7 @@ fun PantallaInicio(
                 Text("productos guardados", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                 Text(productos.size.toString(), fontSize = 42.sp, fontWeight = FontWeight.Bold)
                 Text(
-                    text = if (urgentes == 1) "1 producto caduca pronto" else "$urgentes productos caducan pronto",
+                    text = if (proximos == 1) "1 producto proximo a caducar" else "$proximos productos proximos a caducar",
                     fontSize = 17.sp,
                     lineHeight = 23.sp
                 )
