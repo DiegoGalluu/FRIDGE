@@ -73,7 +73,7 @@ La app tiene cinco pantallas principales:
 - Crear items de compra
 - Marcar items como comprados
 - Generar informe de despensa
-- Ver detalles tecnicos de procesos, hilos y corrutinas
+- Ver un plan de consumo y compra con productos caducados, proximos y sugeridos
 
 ## Flujo de demostracion recomendado
 
@@ -89,9 +89,9 @@ La app tiene cinco pantallas principales:
 10. Marcar un item como comprado
 11. Abrir el menu lateral
 12. Entrar en informe de despensa
-13. Pulsar generar informe
-14. Ensenar el resumen para usuario
-15. Ensenar los detalles tecnicos para PSP
+13. Pulsar actualizar informe
+14. Ensenar el plan para hoy
+15. Anadir un producto sugerido a la lista de la compra
 
 ## Cumplimiento PMDM RA1
 
@@ -222,4 +222,4 @@ La parte visible para el usuario permite anadir alimentos, revisar caducidades y
 
 La parte de informe aprovecha esos mismos datos para cumplir PSP. Primero exporta la despensa a CSV, despues ejecuta procesos externos con ProcessBuilder y finalmente ejecuta pruebas con hilos y corrutinas.
 
-Asi el usuario ve un informe util y el profesor puede revisar claramente procesos, hilos, corrutinas, comunicacion, tiempos y errores controlados.
+La pantalla muestra al usuario un plan util de consumo y compra. Los detalles tecnicos quedan ejecutados y documentados en el codigo y en `RESULTADOS.md`, pero no se muestran como texto crudo dentro de la app.

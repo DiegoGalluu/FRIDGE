@@ -333,6 +333,8 @@ private fun ContenidoNavegacion(
         composable(Rutas.INFORME) {
             PantallaInforme(
                 ultimoInforme = informes.firstOrNull(),
+                productos = productos,
+                onAnadirCompra = onAnadirCompraDesdeProducto,
                 onGenerarInforme = onGenerarInforme,
                 onInformeGenerado = onInformeGenerado,
                 onMostrarMensaje = onMostrarMensaje

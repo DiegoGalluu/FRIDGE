@@ -44,7 +44,7 @@ Este documento sirve como guia rapida para revisar la entrega de FRIDGE frente a
 | Comunicacion entre procesos | Productor `sort` genera archivo puente y consumidor `cat` lo lee |
 | Secuencial vs concurrente | `compararSecuencialConcurrente()` |
 | Error controlado | `demoErrorProceso()` con archivo inexistente |
-| Resultados documentados | `RESULTADOS.md` |
+| Resultados documentados | `RESULTADOS.md`; la app usa el analisis para generar un informe util sin mostrar comandos crudos al usuario |
 
 ## PSP RA2 - Hilos, corrutinas y sincronizacion
 
@@ -57,7 +57,7 @@ Este documento sirve como guia rapida para revisar la entrega de FRIDGE frente a
 | Productor-consumidor | `Channel<Producto>` en `demoProductorConsumidor()` |
 | Secuencial vs concurrente | `compararSecuencialConcurrenteHilos()` |
 | Error controlado | `demoErrorHilo()` con `IllegalStateException` |
-| Resultados documentados | `RESULTADOS.md` |
+| Resultados documentados | `RESULTADOS.md`; la pantalla de informe muestra acciones de despensa y compra |
 
 ## Pendientes administrativos
 
