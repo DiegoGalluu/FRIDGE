@@ -11,6 +11,7 @@ object AlmacenDatos {
     private const val CLAVE_PRODUCTOS = "productos"
     private const val CLAVE_COMPRA = "compra"
     private const val CLAVE_INFORMES = "informes"
+    private const val CLAVE_SPOONACULAR_API_KEY = "spoonacular_api_key"
 
     // obtiene las preferencias de android
     private fun prefs(context: Context) = context.getSharedPreferences(NOMBRE_PREFS, Context.MODE_PRIVATE)
@@ -70,6 +71,14 @@ object AlmacenDatos {
             if (informe != null) lista.add(informe)
         }
         return lista
+    }
+
+    fun guardarSpoonacularApiKey(context: Context, apiKey: String) {
+        prefs(context).edit().putString(CLAVE_SPOONACULAR_API_KEY, apiKey).apply()
+    }
+
+    fun obtenerSpoonacularApiKey(context: Context): String {
+        return prefs(context).getString(CLAVE_SPOONACULAR_API_KEY, "") ?: ""
     }
 
     // borra todo para poder repetir la demostracion

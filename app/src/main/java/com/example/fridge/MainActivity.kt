@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -78,6 +79,7 @@ import com.example.fridge.ui.PantallaDespensa
 import com.example.fridge.ui.PantallaInforme
 import com.example.fridge.ui.PantallaInicio
 import com.example.fridge.ui.PantallaNuevoProducto
+import com.example.fridge.ui.PantallaRecetas
 import com.example.fridge.util.Rutas
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -106,12 +108,14 @@ fun AplicacionFridge() {
     val listaProductos = remember { mutableStateListOf<Producto>() }
     val listaCompra = remember { mutableStateListOf<ItemCompra>() }
     val listaInformes = remember { mutableStateListOf<InformeDespensa>() }
+    var spoonacularApiKey by remember { mutableStateOf("") }
     var mostrarAyuda by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         listaProductos.addAll(AlmacenDatos.obtenerProductos(context))
         listaCompra.addAll(AlmacenDatos.obtenerCompra(context))
         listaInformes.addAll(AlmacenDatos.obtenerInformes(context))
+        spoonacularApiKey = AlmacenDatos.obtenerSpoonacularApiKey(context)
     }
 
     fun mostrarMensaje(texto: String) {
@@ -172,6 +176,10 @@ fun AplicacionFridge() {
                     scope.launch { drawerState.close() }
                     navegar(Rutas.COMPRA)
                 }
+                DrawerItem("Recetas", Icons.Filled.Restaurant, rutaActual == Rutas.RECETAS) {
+                    scope.launch { drawerState.close() }
+                    navegar(Rutas.RECETAS)
+                }
                 DrawerItem("Informe de despensa", Icons.Filled.Assessment, rutaActual == Rutas.INFORME) {
                     scope.launch { drawerState.close() }
                     navegar(Rutas.INFORME)
@@ -212,6 +220,7 @@ fun AplicacionFridge() {
                 productos = listaProductos,
                 compra = listaCompra,
                 informes = listaInformes,
+                spoonacularApiKey = spoonacularApiKey,
                 onGuardarProducto = { producto ->
                     guardarProductos(listaProductos + producto)
                     mostrarMensaje("Producto guardado")
@@ -246,6 +255,10 @@ fun AplicacionFridge() {
                 onInformeGenerado = { informe ->
                     guardarInformes(listOf(informe) + listaInformes)
                 },
+                onGuardarSpoonacularApiKey = { apiKey ->
+                    spoonacularApiKey = apiKey
+                    AlmacenDatos.guardarSpoonacularApiKey(context, apiKey)
+                },
                 onMostrarMensaje = { texto -> mostrarMensaje(texto) },
                 onNavegar = { ruta -> navegar(ruta) }
             )
@@ -273,6 +286,7 @@ private fun ContenidoNavegacion(
     productos: List<Producto>,
     compra: List<ItemCompra>,
     informes: List<InformeDespensa>,
+    spoonacularApiKey: String,
     onGuardarProducto: (Producto) -> Unit,
     onConsumirProducto: (Producto) -> Unit,
     onAnadirCompraDesdeProducto: (Producto) -> Unit,
@@ -281,6 +295,7 @@ private fun ContenidoNavegacion(
     onEliminarItemCompra: (ItemCompra, Boolean) -> Unit,
     onGenerarInforme: suspend () -> InformeDespensa,
     onInformeGenerado: (InformeDespensa) -> Unit,
+    onGuardarSpoonacularApiKey: (String) -> Unit,
     onMostrarMensaje: (String) -> Unit,
     onNavegar: (String) -> Unit
 ) {
@@ -320,6 +335,14 @@ private fun ContenidoNavegacion(
                 compra = compra,
                 onAnadirItem = onAnadirItemCompra,
                 onEliminarItem = onEliminarItemCompra
+            )
+        }
+        composable(Rutas.RECETAS) {
+            PantallaRecetas(
+                productos = productos,
+                apiKeyGuardada = spoonacularApiKey,
+                onGuardarApiKey = onGuardarSpoonacularApiKey,
+                onMostrarMensaje = onMostrarMensaje
             )
         }
         composable(Rutas.INFORME) {
@@ -376,6 +399,7 @@ private fun BarraInferior(rutaActual: String, onNavegar: (String) -> Unit) {
         ItemBarra("Inicio", Rutas.INICIO, Icons.Filled.Home, rutaActual, onNavegar)
         ItemBarra("Despensa", Rutas.DESPENSA, Icons.AutoMirrored.Filled.List, rutaActual, onNavegar)
         ItemBarra("Compra", Rutas.COMPRA, Icons.Filled.ShoppingCart, rutaActual, onNavegar)
+        ItemBarra("Recetas", Rutas.RECETAS, Icons.Filled.Restaurant, rutaActual, onNavegar)
     }
 }
 
@@ -460,6 +484,7 @@ private fun tituloRuta(ruta: String): String {
         Rutas.DESPENSA -> "Mi despensa"
         Rutas.NUEVO_PRODUCTO -> "Añadir producto"
         Rutas.COMPRA -> "Lista de la compra"
+        Rutas.RECETAS -> "Recetas"
         Rutas.INFORME -> "Informe"
         else -> "FRIDGE"
     }

@@ -15,6 +15,7 @@ No incluye RA5, Auth0, OAuth, login, registro, Firebase ni autenticacion.
 - Navigation Compose
 - SharedPreferences
 - JSON con `org.json`
+- API Spoonacular
 - ProcessBuilder
 - Thread
 - Corrutinas
@@ -53,13 +54,14 @@ La tabla detallada de requisitos esta en `CUMPLIMIENTO_REQUISITOS.md`.
 
 ## Pantallas de la app
 
-La app tiene cinco pantallas principales:
+La app tiene seis pantallas principales:
 
 1. Inicio
 2. Mi despensa
 3. Añadir producto
 4. Lista de la compra
-5. Informe de despensa
+5. Recetas
+6. Informe de despensa
 
 ## Funcionalidades principales
 
@@ -71,6 +73,7 @@ La app tiene cinco pantallas principales:
 - Eliminar productos
 - Crear ítems de compra
 - Marcar ítems como comprados
+- Sugerir recetas con Spoonacular usando la despensa
 - Generar informe de despensa
 - Ver un plan de consumo y compra con productos caducados, próximos y sugeridos
 
@@ -85,11 +88,14 @@ La app tiene cinco pantallas principales:
 7. Pulsar un producto y añadirlo a la lista de la compra
 8. Entrar en Lista de la compra
 9. Marcar un ítem como comprado
-10. Abrir el menú lateral
-11. Entrar en Informe de despensa
-12. Pulsar Actualizar informe
-13. Enseñar el plan para hoy
-14. Añadir un producto sugerido a la lista de la compra
+10. Entrar en Recetas
+11. Guardar una API key gratuita de Spoonacular
+12. Buscar recetas con los productos de la despensa
+13. Abrir el menú lateral
+14. Entrar en Informe de despensa
+15. Pulsar Actualizar informe
+16. Enseñar el plan para hoy
+17. Añadir un producto sugerido a la lista de la compra
 
 ## Cumplimiento PMDM RA1
 
@@ -144,6 +150,7 @@ En este proyecto se usa:
 - Formularios con validacion
 - Navegacion entre multiples pantallas
 - Material Design 3
+- Integracion con una API REST externa para sugerir recetas
 
 ## Cumplimiento PSP RA1
 
@@ -217,6 +224,8 @@ Se implementa:
 FRIDGE no es una demo tecnica aislada. Es una app sencilla para controlar alimentos en casa.
 
 La parte visible para el usuario permite añadir alimentos, revisar caducidades y preparar una lista de la compra.
+
+La pantalla de recetas usa los productos guardados en la despensa y prioriza los proximos a caducar antes de llamar a Spoonacular. La API key se introduce desde la app y se guarda solo en el dispositivo con SharedPreferences.
 
 La parte de informe aprovecha esos mismos datos para cumplir PSP. Primero exporta la despensa a CSV, despues ejecuta procesos externos con ProcessBuilder y finalmente ejecuta pruebas con hilos y corrutinas.
 
