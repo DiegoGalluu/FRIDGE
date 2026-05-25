@@ -86,6 +86,16 @@ object RecipeApiServicio {
                         .thenBy { receta -> receta.totalFaltantes }
                         .thenBy { receta -> receta.titulo }
                 )
+                .take(10)
+                .map { receta -> receta.recalcularIngredientesDesdeDetalle(apiKey, ingredientesBusqueda) }
+                .filter { receta -> receta.totalUsados > 0 }
+                .sortedWith(
+                    compareByDescending<RecetaSugerida> { receta -> receta.usaIngredienteDe(masUrgentes) }
+                        .thenByDescending { receta -> receta.puntuacionPrioridad(prioritariosBusqueda) }
+                        .thenByDescending { receta -> receta.totalUsados }
+                        .thenBy { receta -> receta.totalFaltantes }
+                        .thenBy { receta -> receta.titulo }
+                )
                 .take(6)
 
             TraductorRecetas.traducirRecetas(recetas)
@@ -178,6 +188,53 @@ object RecipeApiServicio {
             if (nombre.isNotBlank()) nombres.add(nombre.formatearNombre())
         }
         return nombres
+    }
+
+    private fun RecetaSugerida.recalcularIngredientesDesdeDetalle(
+        apiKey: String,
+        ingredientesDisponibles: List<IngredienteReceta>
+    ): RecetaSugerida {
+        val ingredientesReceta = obtenerIngredientesDetalle(id, apiKey)
+        if (ingredientesReceta.isEmpty()) return this
+
+        val usados = ingredientesDisponibles
+            .filter { ingrediente ->
+                ingredientesReceta.any { nombre -> nombre.coincideCon(ingrediente) }
+            }
+            .map { ingrediente -> ingrediente.nombreOriginal.formatearNombre() }
+
+        val faltantes = ingredientesReceta
+            .filter { nombre ->
+                ingredientesDisponibles.none { ingrediente -> nombre.coincideCon(ingrediente) }
+            }
+            .map { nombre -> nombre.formatearNombre() }
+
+        return copy(
+            ingredientesUsados = usados,
+            ingredientesFaltantes = faltantes,
+            ingredientesSinUsar = emptyList()
+        )
+    }
+
+    private fun obtenerIngredientesDetalle(id: Int, apiKey: String): List<String> {
+        val url = URL(
+            "https://api.spoonacular.com/recipes/$id/information" +
+                "?includeNutrition=false" +
+                "&apiKey=${codificar(apiKey.trim())}"
+        )
+        val conexion = (url.openConnection() as HttpURLConnection).apply {
+            requestMethod = "GET"
+            connectTimeout = 12000
+            readTimeout = 12000
+        }
+
+        return try {
+            if (conexion.responseCode !in 200..299) return emptyList()
+            val cuerpo = conexion.inputStream.bufferedReader().readText()
+            JSONObject(cuerpo).optJSONArray("extendedIngredients").nombresIngredientesDetalle()
+        } finally {
+            conexion.disconnect()
+        }
     }
 
     private fun JSONObject.extraerPasos(): List<String> {
@@ -326,6 +383,28 @@ object RecipeApiServicio {
         return ingredientesUsados.any { usado ->
             val normalizado = usado.normalizar()
             normalizado.contienePalabra(busqueda) || normalizado.contienePalabra(original)
+        }
+    }
+
+    private fun String.coincideCon(ingrediente: IngredienteReceta): Boolean {
+        val normalizado = normalizar()
+        val busqueda = ingrediente.nombreBusqueda.normalizar()
+        val original = ingrediente.nombreOriginal.normalizar()
+        val alternativas = alternativasIngrediente(busqueda) + alternativasIngrediente(original) + listOf(busqueda, original)
+        return alternativas.distinct().any { alternativa -> normalizado.contienePalabra(alternativa) }
+    }
+
+    private fun alternativasIngrediente(nombre: String): List<String> {
+        return when (nombre) {
+            "bell pepper", "pimiento" -> listOf("bell pepper", "red pepper", "green pepper", "yellow pepper", "orange pepper", "pepper")
+            "tomato", "tomate", "tomates" -> listOf("tomato", "tomatoes", "green tomato", "green tomatoes")
+            "onion", "cebolla", "cebollas" -> listOf("onion", "onions", "red onion", "yellow onion", "white onion")
+            "garlic", "ajo" -> listOf("garlic", "garlic clove", "garlic cloves")
+            "chicken", "pollo" -> listOf("chicken", "chicken breast", "chicken thigh", "chicken cutlet", "chicken cutlets")
+            "cheese", "queso" -> listOf("cheese", "feta", "parmesan", "cheddar", "mozzarella")
+            "olive oil", "aceite de oliva", "aceite" -> listOf("olive oil", "oil")
+            "black pepper", "pimienta" -> listOf("black pepper", "pepper")
+            else -> listOf(nombre)
         }
     }
 
