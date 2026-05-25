@@ -11,6 +11,13 @@ data class RecetaSugerida(
     val totalFaltantes: Int get() = ingredientesFaltantes.size
 }
 
+data class DetalleReceta(
+    val titulo: String,
+    val ingredientes: List<String>,
+    val pasos: List<String>,
+    val resumen: String
+)
+
 data class IngredienteReceta(
     val nombreOriginal: String,
     val nombreBusqueda: String,

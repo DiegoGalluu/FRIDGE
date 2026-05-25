@@ -1,4 +1,4 @@
-package com.example.fridge.psp
+package com.example.fridge.procesamiento
 
 import com.example.fridge.modelo.Producto
 import com.example.fridge.modelo.ResultadoTarea
@@ -12,14 +12,14 @@ import kotlinx.coroutines.channels.Channel
 import java.util.Collections
 
 class GestorHilos {
-    // ejecuta todas las pruebas de hilos y corrutinas
+    // ejecuta el analisis interno con hilos y corrutinas
     suspend fun ejecutarAnalisisHilosYCorrutinas(productos: List<Producto>): ResumenHilos {
         return withContext(Dispatchers.Default) {
             val resultadoThread = revisarCaducidadesConThread(productos)
             val resultadoCorrutina = calcularCompraConCorrutina(productos)
-            val resultadoCanal = demoProductorConsumidor(productos)
+            val resultadoCanal = ejecutarProductorConsumidor(productos)
             val comparacion = compararSecuencialConcurrenteHilos(productos)
-            val error = demoErrorHilo()
+            val error = generarErrorControladoHilo()
 
             val detalles = buildString {
                 appendLine("hilo real")
@@ -106,7 +106,7 @@ class GestorHilos {
     }
 
     // comunica productor y consumidor con channel
-    private suspend fun demoProductorConsumidor(productos: List<Producto>): ResultadoTarea = coroutineScope {
+    private suspend fun ejecutarProductorConsumidor(productos: List<Producto>): ResultadoTarea = coroutineScope {
         val inicio = System.currentTimeMillis()
         val eventos = Collections.synchronizedList(mutableListOf<String>())
         val canal = Channel<Producto>()
@@ -174,11 +174,11 @@ class GestorHilos {
     }
 
     // simula un fallo controlado de una tarea
-    private fun demoErrorHilo(): ResultadoTarea {
+    private fun generarErrorControladoHilo(): ResultadoTarea {
         val inicio = System.currentTimeMillis()
         return try {
             val listaVacia = emptyList<Producto>()
-            if (listaVacia.isEmpty()) throw IllegalStateException("lista vacia para probar error")
+            if (listaVacia.isEmpty()) throw IllegalStateException("lista vacia para validar control de errores")
             ResultadoTarea("error de hilo", "sin error", "finalizado", System.currentTimeMillis() - inicio, true)
         } catch (e: Exception) {
             ResultadoTarea(

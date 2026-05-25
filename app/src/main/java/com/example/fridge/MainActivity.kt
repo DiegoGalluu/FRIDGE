@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -67,12 +68,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.fridge.datos.AlmacenDatos
+import com.example.fridge.datos.DatosEjemplo
 import com.example.fridge.modelo.InformeDespensa
 import com.example.fridge.modelo.ItemCompra
 import com.example.fridge.modelo.Producto
-import com.example.fridge.psp.ExportadorDespensa
-import com.example.fridge.psp.GestorHilos
-import com.example.fridge.psp.GestorProcesos
+import com.example.fridge.procesamiento.ExportadorDespensa
+import com.example.fridge.procesamiento.ExportadorResultados
+import com.example.fridge.procesamiento.GestorHilos
+import com.example.fridge.procesamiento.GestorProcesos
 import com.example.fridge.ui.FridgeTheme
 import com.example.fridge.ui.PantallaCompra
 import com.example.fridge.ui.PantallaDespensa
@@ -144,6 +147,13 @@ fun AplicacionFridge() {
         listaInformes.clear()
         listaInformes.addAll(nuevaLista)
         AlmacenDatos.guardarInformes(context, listaInformes)
+    }
+
+    fun cargarDatosEjemplo() {
+        guardarProductos(DatosEjemplo.productos())
+        mostrarAyuda = false
+        mostrarMensaje("Datos de ejemplo cargados")
+        navegar(Rutas.DESPENSA)
     }
 
     val rutaActual = rutaActual(navController)
@@ -263,10 +273,22 @@ fun AplicacionFridge() {
             onDismissRequest = { mostrarAyuda = false },
             title = { Text("Ayuda") },
             text = {
-                Text("Usa Inicio para ver el resumen, Despensa para controlar alimentos, Compra para apuntar lo que falta e Informe para revisar el estado de tu despensa.")
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text("\"Inicio\" muestra un resumen rapido de tu despensa, compras pendientes y ultimo informe.")
+                    Text("\"Mi despensa\" sirve para revisar alimentos, filtrar caducidades, consumir productos o mandarlos a la compra.")
+                    Text("\"Añadir producto\" permite guardar alimentos nuevos con cantidad, categoria y caducidad.")
+                    Text("\"Lista de la compra\" organiza lo que falta y permite marcar productos como comprados.")
+                    Text("\"Recetas\" busca ideas con los ingredientes disponibles y prioriza lo que caduca antes.")
+                    Text("\"Informe\" resume el estado de la despensa y propone que consumir primero.")
+                }
             },
             confirmButton = {
                 TextButton(onClick = { mostrarAyuda = false }) { Text("Entendido") }
+            },
+            dismissButton = {
+                Button(onClick = { cargarDatosEjemplo() }) {
+                    Text("Introducir datos de ejemplo")
+                }
             }
         )
     }
@@ -370,7 +392,7 @@ private fun generarInformeCompleto(context: android.content.Context, productos: 
         append(recomendacion)
     }
 
-    return InformeDespensa(
+    val informe = InformeDespensa(
         totalProductos = productos.size,
         productosProximos = proximos,
         productosCaducados = caducados,
@@ -380,6 +402,8 @@ private fun generarInformeCompleto(context: android.content.Context, productos: 
         detallesProcesos = resumenProcesos.detalles,
         detallesHilos = resumenHilos.detalles
     )
+    val rutaResultados = ExportadorResultados.exportar(context, informe, productos)
+    return informe.copy(rutaResultados = rutaResultados)
 }
 
 @Composable

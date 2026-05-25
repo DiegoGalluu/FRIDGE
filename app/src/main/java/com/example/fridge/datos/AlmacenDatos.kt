@@ -72,7 +72,7 @@ object AlmacenDatos {
         return lista
     }
 
-    // borra todo para poder repetir la demostracion
+    // borra todos los datos guardados y deja la app lista para empezar de nuevo
     fun borrarTodo(context: Context) {
         prefs(context).edit().clear().apply()
     }

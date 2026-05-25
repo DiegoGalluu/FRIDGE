@@ -1,4 +1,4 @@
-package com.example.fridge.psp
+package com.example.fridge.procesamiento
 
 import android.content.Context
 import com.example.fridge.modelo.Producto

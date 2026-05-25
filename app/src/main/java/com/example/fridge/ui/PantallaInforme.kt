@@ -79,7 +79,7 @@ fun PantallaInforme(
                         cargando = true
                         val informe = onGenerarInforme()
                         onInformeGenerado(informe)
-                        onMostrarMensaje("Informe generado")
+                        onMostrarMensaje("Informe generado en ${informe.rutaResultados}")
                     } catch (e: Exception) {
                         onMostrarMensaje("No se pudo generar el informe: ${e.message ?: "error desconocido"}")
                     } finally {
@@ -106,6 +106,9 @@ fun PantallaInforme(
                     Text(recomendacion, fontSize = 18.sp, lineHeight = 25.sp)
                     HorizontalDivider()
                     Text("Actualizado ${UtilFechas.formatearFecha(informe.fecha)}", fontSize = 15.sp)
+                    if (informe.rutaResultados.isNotBlank()) {
+                        Text("Archivo: ${informe.rutaResultados}", fontSize = 14.sp, lineHeight = 19.sp)
+                    }
                 }
             }
 

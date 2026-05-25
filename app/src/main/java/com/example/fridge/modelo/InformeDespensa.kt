@@ -13,7 +13,8 @@ data class InformeDespensa(
     val tiempoSecuencial: Long,
     val tiempoConcurrente: Long,
     val detallesProcesos: String,
-    val detallesHilos: String
+    val detallesHilos: String,
+    val rutaResultados: String = ""
 ) {
     // convierte el informe a json para guardarlo
     fun aJson(): JSONObject {
@@ -28,6 +29,7 @@ data class InformeDespensa(
             .put("tiempoConcurrente", tiempoConcurrente)
             .put("detallesProcesos", detallesProcesos)
             .put("detallesHilos", detallesHilos)
+            .put("rutaResultados", rutaResultados)
     }
 
     companion object {
@@ -47,7 +49,8 @@ data class InformeDespensa(
                     tiempoSecuencial = objeto.optLong("tiempoSecuencial", 0L),
                     tiempoConcurrente = objeto.optLong("tiempoConcurrente", 0L),
                     detallesProcesos = objeto.optString("detallesProcesos", ""),
-                    detallesHilos = objeto.optString("detallesHilos", "")
+                    detallesHilos = objeto.optString("detallesHilos", ""),
+                    rutaResultados = objeto.optString("rutaResultados", "")
                 )
             } catch (e: Exception) {
                 null

@@ -1,4 +1,4 @@
-package com.example.fridge.psp
+package com.example.fridge.procesamiento
 
 import com.example.fridge.modelo.ResultadoProceso
 import java.io.File
@@ -37,7 +37,7 @@ class GestorProcesos {
         }
     }
 
-    // ejecuta comandos basicos para demostrar processbuilder
+    // ejecuta comandos basicos para procesar el informe
     fun ejecutarProcesosBasicos(archivo: File): List<ResultadoProceso> {
         val ruta = rutaSegura(archivo)
         return listOf(
@@ -48,8 +48,8 @@ class GestorProcesos {
         )
     }
 
-    // usa un archivo temporal como puente entre procesos
-    fun demoComunicacionProcesos(archivo: File): List<ResultadoProceso> {
+    // usa un archivo temporal como puente entre operaciones
+    fun comunicarProcesosConArchivo(archivo: File): List<ResultadoProceso> {
         val rutaEntrada = rutaSegura(archivo)
         val archivoPuente = File(archivo.parentFile, "despensa_ordenada.csv")
         val rutaSalida = rutaSegura(archivoPuente)
@@ -92,7 +92,7 @@ class GestorProcesos {
     }
 
     // genera un fallo controlado sin cerrar la app
-    fun demoErrorProceso(): ResultadoProceso {
+    fun generarErrorControladoProceso(): ResultadoProceso {
         return lanzarProceso(
             "error controlado",
             listOf("sh", "-c", "cat archivo_que_no_existe.csv")
@@ -102,9 +102,9 @@ class GestorProcesos {
     // crea un texto completo para la pantalla de informe
     fun generarInformeProcesos(archivo: File): ResumenProcesos {
         val basicos = ejecutarProcesosBasicos(archivo)
-        val comunicacion = demoComunicacionProcesos(archivo)
+        val comunicacion = comunicarProcesosConArchivo(archivo)
         val comparacion = compararSecuencialConcurrente(archivo)
-        val error = demoErrorProceso()
+        val error = generarErrorControladoProceso()
 
         val detalles = buildString {
             appendLine("procesos basicos")

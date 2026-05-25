@@ -1,22 +1,20 @@
-# RESULTADOS DE FRIDGE
+# Resultados de FRIDGE
 
-Este documento resume los resultados esperados al ejecutar la app FRIDGE y generar un informe de despensa.
-
-Los tiempos pueden cambiar segun el movil o emulador usado.
+Este documento recoge ejemplos de salidas generadas por la app al trabajar con una despensa de prueba. Los tiempos pueden cambiar segun el movil o emulador usado.
 
 ## Datos de ejemplo
 
-Al pulsar cargar datos de ejemplo se crean estos productos:
+Al cargar los datos de ejemplo se crean estos productos:
 
 | producto | categoria | cantidad | caduca en dias |
 |---|---|---:|---:|
-| Leche | Lácteos | 1 | 2 |
+| Leche | Lacteos | 1 | 2 |
 | Tomate | Verdura | 4 | 3 |
 | Pollo | Carne | 1 | 1 |
 | Arroz | Despensa | 1 | 90 |
-| Queso | Lácteos | 1 | 7 |
+| Queso | Lacteos | 1 | 7 |
 
-## Resultado visible para el usuario
+## Resumen visible
 
 Ejemplo de resumen generado:
 
@@ -28,54 +26,24 @@ producto mas proximo a caducar Pollo
 recomendacion de compra consume primero los productos proximos a caducar
 ```
 
-## PSP RA1 procesos
+## Procesamiento de archivos
 
-La clase `GestorProcesos` ejecuta procesos externos usando `ProcessBuilder`.
+La app puede exportar la despensa a CSV para procesar un informe interno.
 
-### Proceso 1 mensaje simple
+### Lectura de despensa
 
-Comando:
-
-```text
-sh -c echo informe de despensa
-```
-
-Salida esperada:
-
-```text
-stdout informe de despensa
-stderr sin salida de error
-codigo 0
-tiempo variable
-correcto true
-```
-
-### Proceso 2 lectura de archivo csv
-
-Comando:
-
-```text
-sh -c cat despensa_exportada.csv
-```
-
-Salida esperada:
+Archivo generado:
 
 ```text
 nombre,categoria,cantidad,dias
-Leche,Lácteos,1,2
+Leche,Lacteos,1,2
 Tomate,Verdura,4,3
 Pollo,Carne,1,1
 Arroz,Despensa,1,90
-Queso,Lácteos,1,7
+Queso,Lacteos,1,7
 ```
 
-### Proceso 3 contar lineas
-
-Comando:
-
-```text
-sh -c wc -l despensa_exportada.csv
-```
+### Conteo de productos
 
 Salida esperada:
 
@@ -85,50 +53,30 @@ Salida esperada:
 
 Hay 6 lineas porque la primera es la cabecera del CSV.
 
-### Proceso 4 ordenar archivo
-
-Comando:
-
-```text
-sh -c sort despensa_exportada.csv
-```
+### Ordenacion de datos
 
 Salida esperada:
 
 ```text
 Arroz,Despensa,1,90
-Leche,Lácteos,1,2
+Leche,Lacteos,1,2
 nombre,categoria,cantidad,dias
 Pollo,Carne,1,1
-Queso,Lácteos,1,7
+Queso,Lacteos,1,7
 Tomate,Verdura,4,3
 ```
 
 El orden puede variar si el sistema cambia el criterio de ordenacion.
 
-## PSP RA1 comunicacion entre procesos
+## Comunicacion interna
 
-La comunicacion se hace mediante un archivo temporal.
+Para algunas tareas, la app genera un archivo intermedio y lo reutiliza en otra operacion.
 
-Proceso productor:
+1. Se produce un archivo ordenado desde la despensa exportada.
+2. Se lee ese archivo para comprobar su contenido.
+3. Se registra salida, error, codigo de salida y tiempo de cada paso.
 
-```text
-sort despensa_exportada.csv > despensa_ordenada.csv
-```
-
-Proceso consumidor:
-
-```text
-cat despensa_ordenada.csv
-```
-
-Explicacion:
-
-1. El primer proceso produce un archivo ordenado
-2. El segundo proceso consume ese archivo y lo lee
-3. La app muestra stdout, stderr, codigo de salida y tiempo de ambos
-
-## PSP RA1 comparacion secuencial y concurrente
+## Comparacion de rendimiento
 
 Ejemplo:
 
@@ -137,36 +85,28 @@ Ejemplo:
 | secuencial | 35 ms |
 | concurrente | 18 ms |
 
-El tiempo concurrente puede ser menor porque varios procesos se lanzan a la vez en hilos distintos.
+La version concurrente puede ser mas rapida porque varias tareas se lanzan a la vez.
 
-En un emulador rapido la diferencia puede ser pequena porque los comandos son muy simples.
+## Errores controlados
 
-## PSP RA1 error controlado
+Cuando una operacion no puede leer un archivo, la app captura el error y lo transforma en un resultado controlado.
 
-Comando:
-
-```text
-sh -c cat archivo_que_no_existe.csv
-```
-
-Resultado esperado:
+Ejemplo:
 
 ```text
 stdout sin salida estandar
-stderr cat archivo_que_no_existe.csv no such file or directory
+stderr archivo no encontrado
 codigo distinto de 0
 correcto false
 ```
 
-La app no se cierra porque el error se captura y se muestra como error controlado.
+La app no se cierra porque el error se gestiona antes de llegar a la interfaz.
 
-## PSP RA2 hilos y corrutinas
+## Tareas en segundo plano
 
-La clase `GestorHilos` ejecuta tareas con hilos y corrutinas.
+La app usa tareas concurrentes para revisar caducidades y generar sugerencias sin bloquear la interfaz.
 
-### Hilo real
-
-Se usa `Thread` para revisar caducidades.
+### Revision de caducidades
 
 Salida esperada:
 
@@ -177,9 +117,7 @@ estado finalizado
 correcto true
 ```
 
-### Corrutina
-
-Se usa `async` para calcular compra sugerida.
+### Compra sugerida
 
 Salida esperada:
 
@@ -191,9 +129,9 @@ correcto true
 
 La salida puede cambiar segun los productos guardados.
 
-## PSP RA2 productor consumidor
+## Flujo productor consumidor
 
-Se usa `Channel<Producto>`.
+Al revisar la despensa, una tarea envia productos y otra los clasifica.
 
 Salida esperada:
 
@@ -206,13 +144,7 @@ consumidor recibe Tomate
 consumidor marca Tomate como proximo
 ```
 
-Explicacion:
-
-1. El productor envia productos al canal
-2. El consumidor recibe productos del canal
-3. El consumidor clasifica cada producto como correcto, proximo o caducado
-
-## PSP RA2 comparacion secuencial y concurrente
+## Concurrencia
 
 Ejemplo:
 
@@ -221,19 +153,4 @@ Ejemplo:
 | secuencial | 240 ms |
 | concurrente | 85 ms |
 
-La version concurrente suele ser mas rapida porque las tres tareas se ejecutan al mismo tiempo con corrutinas.
-
-## PSP RA2 error controlado
-
-Se simula una lista vacia y se lanza una excepcion controlada.
-
-Salida esperada:
-
-```text
-nombre error de hilo
-salida lista vacia para probar error
-estado error controlado
-correcto false
-```
-
-La app no se cierra porque el error se captura y se devuelve como `ResultadoTarea`.
+La version concurrente suele ser mas rapida porque varias revisiones se ejecutan al mismo tiempo.

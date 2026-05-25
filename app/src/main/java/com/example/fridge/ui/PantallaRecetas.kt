@@ -1,6 +1,7 @@
 package com.example.fridge.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,13 +15,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fridge.modelo.DetalleReceta
 import com.example.fridge.modelo.IngredienteReceta
 import com.example.fridge.modelo.Producto
 import com.example.fridge.modelo.RecetaSugerida
@@ -49,8 +54,13 @@ fun PantallaRecetas(
 ) {
     val scope = rememberCoroutineScope()
     var cargando by remember { mutableStateOf(false) }
+    var mensajeCarga by remember { mutableStateOf("") }
     var recetas by remember { mutableStateOf<List<RecetaSugerida>>(emptyList()) }
     var error by remember { mutableStateOf<String?>(null) }
+    var recetaSeleccionada by remember { mutableStateOf<RecetaSugerida?>(null) }
+    var detalleReceta by remember { mutableStateOf<DetalleReceta?>(null) }
+    var cargandoDetalle by remember { mutableStateOf(false) }
+    var errorDetalle by remember { mutableStateOf<String?>(null) }
     val ingredientes = remember(productos) { RecipeApiServicio.prepararIngredientes(productos) }
 
     Column(
@@ -86,6 +96,7 @@ fun PantallaRecetas(
                     onClick = {
                         scope.launch {
                             cargando = true
+                            mensajeCarga = "Buscando recetas y traduciendo resultados"
                             error = null
                             try {
                                 recetas = withContext(Dispatchers.IO) {
@@ -100,6 +111,7 @@ fun PantallaRecetas(
                                 error = e.message ?: "No se pudieron buscar recetas"
                             } finally {
                                 cargando = false
+                                mensajeCarga = ""
                             }
                         }
                     },
@@ -107,6 +119,21 @@ fun PantallaRecetas(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(if (cargando) "Buscando" else "Buscar recetas")
+                }
+                if (cargando) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        CircularProgressIndicator()
+                        Text(
+                            text = mensajeCarga,
+                            textAlign = TextAlign.Center,
+                            fontSize = 14.sp,
+                            lineHeight = 19.sp
+                        )
+                    }
                 }
             }
         }
@@ -126,9 +153,43 @@ fun PantallaRecetas(
             Text("Todavía no hay recetas sugeridas", fontSize = 17.sp)
         } else {
             recetas.forEach { receta ->
-                TarjetaReceta(receta)
+                TarjetaReceta(
+                    receta = receta,
+                    onClick = {
+                        recetaSeleccionada = receta
+                        detalleReceta = null
+                        errorDetalle = null
+                        cargandoDetalle = true
+                        scope.launch {
+                            try {
+                                detalleReceta = withContext(Dispatchers.IO) {
+                                    RecipeApiServicio.obtenerDetalleReceta(receta.id)
+                                }
+                            } catch (e: Exception) {
+                                errorDetalle = e.message ?: "No se pudo cargar la receta"
+                            } finally {
+                                cargandoDetalle = false
+                            }
+                        }
+                    }
+                )
             }
         }
+    }
+
+    if (recetaSeleccionada != null) {
+        DetalleRecetaDialogo(
+            titulo = recetaSeleccionada?.titulo.orEmpty(),
+            detalle = detalleReceta,
+            cargando = cargandoDetalle,
+            error = errorDetalle,
+            onCerrar = {
+                recetaSeleccionada = null
+                detalleReceta = null
+                errorDetalle = null
+                cargandoDetalle = false
+            }
+        )
     }
 }
 
@@ -239,8 +300,15 @@ private fun FilaIngrediente(ingrediente: IngredienteReceta) {
 }
 
 @Composable
-private fun TarjetaReceta(receta: RecetaSugerida) {
-    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+private fun TarjetaReceta(receta: RecetaSugerida, onClick: () -> Unit) {
+    val faltantesVisibles = receta.ingredientesFaltantes.take(8)
+    val faltantesOcultos = receta.ingredientesFaltantes.size - faltantesVisibles.size
+
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+    ) {
         Column(
             modifier = Modifier.padding(18.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -251,6 +319,7 @@ private fun TarjetaReceta(receta: RecetaSugerida) {
                 fontSize = 15.sp,
                 lineHeight = 20.sp
             )
+            Text("Toca para ver la receta completa", fontSize = 14.sp, lineHeight = 19.sp)
             if (receta.ingredientesUsados.isNotEmpty()) {
                 HorizontalDivider()
                 Text("De tu despensa", fontWeight = FontWeight.SemiBold)
@@ -259,13 +328,80 @@ private fun TarjetaReceta(receta: RecetaSugerida) {
             if (receta.ingredientesFaltantes.isNotEmpty()) {
                 HorizontalDivider()
                 Text("Te faltaría", fontWeight = FontWeight.SemiBold)
-                Text(receta.ingredientesFaltantes.joinToString(", "), fontSize = 15.sp, lineHeight = 20.sp)
-            }
-            if (receta.ingredientesSinUsar.isNotEmpty()) {
-                Text("Sin usar: ${receta.ingredientesSinUsar.joinToString(", ")}", fontSize = 14.sp, lineHeight = 19.sp)
+                Text(
+                    text = if (faltantesOcultos > 0) {
+                        "${faltantesVisibles.joinToString(", ")} y $faltantesOcultos más"
+                    } else {
+                        faltantesVisibles.joinToString(", ")
+                    },
+                    fontSize = 15.sp,
+                    lineHeight = 20.sp
+                )
             }
         }
     }
+}
+
+@Composable
+private fun DetalleRecetaDialogo(
+    titulo: String,
+    detalle: DetalleReceta?,
+    cargando: Boolean,
+    error: String?,
+    onCerrar: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onCerrar,
+        title = { Text(detalle?.titulo ?: titulo) },
+        text = {
+            Column(
+                modifier = Modifier
+                    .heightIn(max = 520.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                when {
+                    cargando -> {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            CircularProgressIndicator()
+                            Text("Cargando receta completa", textAlign = TextAlign.Center)
+                        }
+                    }
+                    error != null -> {
+                        Text(error, color = MaterialTheme.colorScheme.error)
+                    }
+                    detalle != null -> {
+                        if (detalle.ingredientes.isNotEmpty()) {
+                            Text("Ingredientes", fontWeight = FontWeight.Bold)
+                            Text(detalle.ingredientes.joinToString("\n") { ingrediente -> "• $ingrediente" })
+                        }
+                        if (detalle.pasos.isNotEmpty()) {
+                            HorizontalDivider()
+                            Text("Pasos", fontWeight = FontWeight.Bold)
+                            detalle.pasos.forEachIndexed { indice, paso ->
+                                Text("${indice + 1}. $paso", lineHeight = 20.sp)
+                            }
+                        } else if (detalle.resumen.isNotBlank()) {
+                            HorizontalDivider()
+                            Text("Resumen", fontWeight = FontWeight.Bold)
+                            Text(detalle.resumen, lineHeight = 20.sp)
+                        } else {
+                            Text("Spoonacular no ha devuelto instrucciones para esta receta.")
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onCerrar) {
+                Text("Cerrar")
+            }
+        }
+    )
 }
 
 private fun String.formatearNombreIngrediente(): String {
