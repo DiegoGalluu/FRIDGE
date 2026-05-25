@@ -27,7 +27,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.fridge.modelo.Producto
 
 @Composable
@@ -53,7 +55,10 @@ fun PantallaDespensa(
             .padding(16.dp)
     ) {
         TituloSeccion("Mi despensa")
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
             BotonFiltro("Todos", filtro == "todos", Modifier.weight(1f)) { filtro = "todos" }
             BotonFiltro("Próximos", filtro == "proximos", Modifier.weight(1f)) { filtro = "proximos" }
             BotonFiltro("Caducados", filtro == "caducados", Modifier.weight(1f)) { filtro = "caducados" }
@@ -109,11 +114,32 @@ fun PantallaDespensa(
 
 @Composable
 private fun BotonFiltro(texto: String, seleccionado: Boolean, modifier: Modifier, onClick: () -> Unit) {
+    val botonModifier = modifier.height(52.dp)
+    val padding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
     if (seleccionado) {
-        Button(onClick = onClick, modifier = modifier) { Text(texto) }
+        Button(
+            onClick = onClick,
+            modifier = botonModifier,
+            contentPadding = padding
+        ) { TextoFiltro(texto) }
     } else {
-        OutlinedButton(onClick = onClick, modifier = modifier) { Text(texto) }
+        OutlinedButton(
+            onClick = onClick,
+            modifier = botonModifier,
+            contentPadding = padding
+        ) { TextoFiltro(texto) }
     }
+}
+
+@Composable
+private fun TextoFiltro(texto: String) {
+    Text(
+        text = texto,
+        maxLines = 1,
+        overflow = TextOverflow.Clip,
+        softWrap = false,
+        fontSize = 14.sp
+    )
 }
 
 @Composable
