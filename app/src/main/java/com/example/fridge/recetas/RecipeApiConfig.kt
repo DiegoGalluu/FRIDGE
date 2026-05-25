@@ -1,5 +1,5 @@
 package com.example.fridge.recetas
 
-object SpoonacularConfig {
+object RecipeApiConfig {
     const val API_KEY = ""
 }

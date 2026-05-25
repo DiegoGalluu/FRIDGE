@@ -15,7 +15,7 @@ No incluye RA5, Auth0, OAuth, login, registro, Firebase ni autenticacion.
 - Navigation Compose
 - SharedPreferences
 - JSON con `org.json`
-- API Spoonacular
+- API RecipeAPI.io
 - ProcessBuilder
 - Thread
 - Corrutinas
@@ -73,7 +73,7 @@ La app tiene seis pantallas principales:
 - Eliminar productos
 - Crear ítems de compra
 - Marcar ítems como comprados
-- Sugerir recetas con Spoonacular usando la despensa
+- Sugerir recetas con RecipeAPI.io usando la despensa
 - Generar informe de despensa
 - Ver un plan de consumo y compra con productos caducados, próximos y sugeridos
 
@@ -213,7 +213,10 @@ Se implementa:
 - `PantallaDespensa`
 - `PantallaNuevoProducto`
 - `PantallaCompra`
+- `PantallaRecetas`
 - `PantallaInforme`
+- `RecipeApiServicio`
+- `RecipeApiConfig`
 - `ComponentesComunes`
 - `TemaApp`
 - `Rutas`
@@ -225,7 +228,7 @@ FRIDGE no es una demo tecnica aislada. Es una app sencilla para controlar alimen
 
 La parte visible para el usuario permite añadir alimentos, revisar caducidades y preparar una lista de la compra.
 
-La pantalla de recetas usa los productos guardados en la despensa y prioriza los proximos a caducar antes de llamar a Spoonacular. La clave de Spoonacular se configura en `app/src/main/java/com/example/fridge/recetas/SpoonacularConfig.kt`, por lo que el usuario final no tiene que introducir ningun dato tecnico en la app.
+La pantalla de recetas usa los productos guardados en la despensa y prioriza los proximos a caducar antes de llamar a RecipeAPI.io. La clave se configura en `app/src/main/java/com/example/fridge/recetas/RecipeApiConfig.kt`, por lo que el usuario final no tiene que introducir ningun dato tecnico en la app.
 
 La parte de informe aprovecha esos mismos datos para cumplir PSP. Primero exporta la despensa a CSV, despues ejecuta procesos externos con ProcessBuilder y finalmente ejecuta pruebas con hilos y corrutinas.
 

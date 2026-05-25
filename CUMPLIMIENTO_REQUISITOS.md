@@ -31,7 +31,7 @@ Este documento sirve como guia rapida para revisar la entrega de FRIDGE frente a
 | Multiples pantallas | Inicio, despensa, nuevo producto, compra e informe |
 | Formulario con validacion | `PantallaNuevoProducto.kt` y `PantallaCompra.kt` |
 | Lista de elementos | `LazyColumn` en despensa y lista de la compra |
-| API externa | Pantalla `Recetas` con llamada HTTPS a Spoonacular usando productos de la despensa |
+| API externa | Pantalla `Recetas` con llamada HTTPS a RecipeAPI.io usando productos de la despensa |
 
 ## PSP RA1 - Procesos y concurrencia
 

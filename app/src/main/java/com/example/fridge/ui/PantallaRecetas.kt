@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.example.fridge.modelo.IngredienteReceta
 import com.example.fridge.modelo.Producto
 import com.example.fridge.modelo.RecetaSugerida
-import com.example.fridge.recetas.SpoonacularServicio
+import com.example.fridge.recetas.RecipeApiServicio
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,7 +51,7 @@ fun PantallaRecetas(
     var cargando by remember { mutableStateOf(false) }
     var recetas by remember { mutableStateOf<List<RecetaSugerida>>(emptyList()) }
     var error by remember { mutableStateOf<String?>(null) }
-    val ingredientes = remember(productos) { SpoonacularServicio.prepararIngredientes(productos) }
+    val ingredientes = remember(productos) { RecipeApiServicio.prepararIngredientes(productos) }
 
     Column(
         modifier = modifier
@@ -89,7 +89,7 @@ fun PantallaRecetas(
                             error = null
                             try {
                                 recetas = withContext(Dispatchers.IO) {
-                                    SpoonacularServicio.buscarRecetas(productos)
+                                    RecipeApiServicio.buscarRecetas(productos)
                                 }
                                 if (recetas.isEmpty()) {
                                     onMostrarMensaje("No se encontraron recetas")
