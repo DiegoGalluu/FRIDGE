@@ -3,11 +3,17 @@ package com.example.fridge
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.automirrored.filled.List
@@ -25,8 +31,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -43,10 +49,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -380,12 +390,40 @@ private fun RowScope.ItemBarra(
     rutaActual: String,
     onNavegar: (String) -> Unit
 ) {
-    NavigationBarItem(
-        selected = rutaActual == ruta,
-        onClick = { onNavegar(ruta) },
-        icon = { Icon(icono, contentDescription = texto) },
-        label = { Text(texto) }
-    )
+    val seleccionado = rutaActual == ruta
+    val colorPrincipal = MaterialTheme.colorScheme.primary
+
+    Column(
+        modifier = Modifier
+            .weight(1f)
+            .clip(MaterialTheme.shapes.small)
+            .clickable { onNavegar(ruta) }
+            .padding(vertical = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(
+                    color = if (seleccionado) colorPrincipal else Color.Transparent,
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icono,
+                contentDescription = texto,
+                tint = if (seleccionado) Color.White else colorPrincipal,
+                modifier = Modifier.size(22.dp)
+            )
+        }
+        Text(
+            text = texto,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
 }
 
 @Composable
