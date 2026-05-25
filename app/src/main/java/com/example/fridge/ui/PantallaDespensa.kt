@@ -52,17 +52,17 @@ fun PantallaDespensa(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        TituloSeccion("mi despensa")
+        TituloSeccion("Mi despensa")
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-            BotonFiltro("todos", filtro == "todos", Modifier.weight(1f)) { filtro = "todos" }
-            BotonFiltro("proximos", filtro == "proximos", Modifier.weight(1f)) { filtro = "proximos" }
-            BotonFiltro("caducados", filtro == "caducados", Modifier.weight(1f)) { filtro = "caducados" }
+            BotonFiltro("Todos", filtro == "todos", Modifier.weight(1f)) { filtro = "todos" }
+            BotonFiltro("Próximos", filtro == "proximos", Modifier.weight(1f)) { filtro = "proximos" }
+            BotonFiltro("Caducados", filtro == "caducados", Modifier.weight(1f)) { filtro = "caducados" }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         if (productosFiltrados.isEmpty()) {
-            Text("no hay productos para este filtro")
+            Text("No hay productos para este filtro")
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -83,24 +83,24 @@ fun PantallaDespensa(
         AlertDialog(
             onDismissRequest = { productoSeleccionado = null },
             title = { Text(producto.nombre) },
-            text = { Text("elige que quieres hacer con este producto") },
+            text = { Text("Elige qué quieres hacer con este producto") },
             confirmButton = {
                 TextButton(onClick = {
                     productoSeleccionado = null
                     onConsumirProducto(producto)
-                }) { Text("consumido") }
+                }) { Text("Consumido") }
             },
             dismissButton = {
                 Column {
                     TextButton(onClick = {
                         productoSeleccionado = null
                         onAnadirCompra(producto)
-                    }) { Text("anadir a compra") }
+                    }) { Text("Añadir a la compra") }
                     TextButton(onClick = {
                         productoSeleccionado = null
                         onEliminarProducto(producto)
-                    }) { Text("eliminar") }
-                    TextButton(onClick = { productoSeleccionado = null }) { Text("cancelar") }
+                    }) { Text("Eliminar") }
+                    TextButton(onClick = { productoSeleccionado = null }) { Text("Cancelar") }
                 }
             }
         )
@@ -131,9 +131,23 @@ private fun TarjetaProducto(producto: Producto, onClick: () -> Unit) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(producto.nombre, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-            Text("cantidad ${producto.cantidad}")
-            Text("categoria ${producto.categoria}")
+            Text("Cantidad ${producto.cantidad}")
+            Text("Categoría ${formatearCategoria(producto.categoria)}")
             Text(producto.textoCaducidad(), color = colorTexto, fontWeight = FontWeight.Bold)
         }
+    }
+}
+
+private fun formatearCategoria(categoria: String): String {
+    return when (categoria.lowercase()) {
+        "lacteos", "lácteos" -> "Lácteos"
+        "carne" -> "Carne"
+        "pescado" -> "Pescado"
+        "verdura" -> "Verdura"
+        "fruta" -> "Fruta"
+        "bebida" -> "Bebida"
+        "despensa" -> "Despensa"
+        "otro" -> "Otro"
+        else -> categoria.replaceFirstChar { letra -> letra.uppercase() }
     }
 }

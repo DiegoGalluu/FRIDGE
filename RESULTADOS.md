@@ -10,11 +10,11 @@ Al pulsar cargar datos de ejemplo se crean estos productos:
 
 | producto | categoria | cantidad | caduca en dias |
 |---|---|---:|---:|
-| leche | lacteos | 1 | 2 |
-| tomate | verdura | 4 | 3 |
-| pollo | carne | 1 | 1 |
-| arroz | despensa | 1 | 90 |
-| queso | lacteos | 1 | 7 |
+| Leche | Lácteos | 1 | 2 |
+| Tomate | Verdura | 4 | 3 |
+| Pollo | Carne | 1 | 1 |
+| Arroz | Despensa | 1 | 90 |
+| Queso | Lácteos | 1 | 7 |
 
 ## Resultado visible para el usuario
 
@@ -24,7 +24,7 @@ Ejemplo de resumen generado:
 total de productos 5
 productos proximos a caducar 3
 productos caducados 0
-producto mas proximo a caducar pollo
+producto mas proximo a caducar Pollo
 recomendacion de compra consume primero los productos proximos a caducar
 ```
 
@@ -62,11 +62,11 @@ Salida esperada:
 
 ```text
 nombre,categoria,cantidad,dias
-leche,lacteos,1,2
-tomate,verdura,4,3
-pollo,carne,1,1
-arroz,despensa,1,90
-queso,lacteos,1,7
+Leche,Lácteos,1,2
+Tomate,Verdura,4,3
+Pollo,Carne,1,1
+Arroz,Despensa,1,90
+Queso,Lácteos,1,7
 ```
 
 ### Proceso 3 contar lineas
@@ -96,12 +96,12 @@ sh -c sort despensa_exportada.csv
 Salida esperada:
 
 ```text
-arroz,despensa,1,90
-leche,lacteos,1,2
+Arroz,Despensa,1,90
+Leche,Lácteos,1,2
 nombre,categoria,cantidad,dias
-pollo,carne,1,1
-queso,lacteos,1,7
-tomate,verdura,4,3
+Pollo,Carne,1,1
+Queso,Lácteos,1,7
+Tomate,Verdura,4,3
 ```
 
 El orden puede variar si el sistema cambia el criterio de ordenacion.
@@ -184,7 +184,7 @@ Se usa `async` para calcular compra sugerida.
 Salida esperada:
 
 ```text
-comprar leche, pollo, arroz, queso
+comprar Leche, Pollo, Arroz, Queso
 estado finalizado
 correcto true
 ```
@@ -198,12 +198,12 @@ Se usa `Channel<Producto>`.
 Salida esperada:
 
 ```text
-productor envia leche
-consumidor recibe leche
-consumidor marca leche como proximo
-productor envia tomate
-consumidor recibe tomate
-consumidor marca tomate como proximo
+productor envia Leche
+consumidor recibe Leche
+consumidor marca Leche como proximo
+productor envia Tomate
+consumidor recibe Tomate
+consumidor marca Tomate como proximo
 ```
 
 Explicacion:

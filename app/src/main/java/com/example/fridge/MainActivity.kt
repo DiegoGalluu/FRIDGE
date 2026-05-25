@@ -66,7 +66,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.fridge.datos.AlmacenDatos
-import com.example.fridge.datos.DatosEjemplo
 import com.example.fridge.modelo.InformeDespensa
 import com.example.fridge.modelo.ItemCompra
 import com.example.fridge.modelo.Producto
@@ -122,8 +121,8 @@ fun AplicacionFridge() {
     fun navegar(ruta: String) {
         navController.navigate(ruta) {
             launchSingleTop = true
-            restoreState = true
-            popUpTo(Rutas.INICIO) { saveState = true }
+            restoreState = false
+            popUpTo(Rutas.INICIO) { saveState = false }
         }
     }
 
@@ -157,27 +156,27 @@ fun AplicacionFridge() {
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
                 )
-                DrawerItem("inicio", Icons.Filled.Home, rutaActual == Rutas.INICIO) {
+                DrawerItem("Inicio", Icons.Filled.Home, rutaActual == Rutas.INICIO) {
                     scope.launch { drawerState.close() }
                     navegar(Rutas.INICIO)
                 }
-                DrawerItem("mi despensa", Icons.AutoMirrored.Filled.List, rutaActual == Rutas.DESPENSA) {
+                DrawerItem("Mi despensa", Icons.AutoMirrored.Filled.List, rutaActual == Rutas.DESPENSA) {
                     scope.launch { drawerState.close() }
                     navegar(Rutas.DESPENSA)
                 }
-                DrawerItem("anadir producto", Icons.Filled.Add, rutaActual == Rutas.NUEVO_PRODUCTO) {
+                DrawerItem("Añadir producto", Icons.Filled.Add, rutaActual == Rutas.NUEVO_PRODUCTO) {
                     scope.launch { drawerState.close() }
                     navController.navigate(Rutas.NUEVO_PRODUCTO)
                 }
-                DrawerItem("lista de la compra", Icons.Filled.ShoppingCart, rutaActual == Rutas.COMPRA) {
+                DrawerItem("Lista de la compra", Icons.Filled.ShoppingCart, rutaActual == Rutas.COMPRA) {
                     scope.launch { drawerState.close() }
                     navegar(Rutas.COMPRA)
                 }
-                DrawerItem("informe de despensa", Icons.Filled.Assessment, rutaActual == Rutas.INFORME) {
+                DrawerItem("Informe de despensa", Icons.Filled.Assessment, rutaActual == Rutas.INFORME) {
                     scope.launch { drawerState.close() }
                     navegar(Rutas.INFORME)
                 }
-                DrawerItem("ayuda", Icons.AutoMirrored.Filled.Help, false) {
+                DrawerItem("Ayuda", Icons.AutoMirrored.Filled.Help, false) {
                     scope.launch { drawerState.close() }
                     mostrarAyuda = true
                 }
@@ -201,7 +200,7 @@ fun AplicacionFridge() {
             floatingActionButton = {
                 if (rutaActual == Rutas.DESPENSA) {
                     FloatingActionButton(onClick = { navController.navigate(Rutas.NUEVO_PRODUCTO) }) {
-                        Icon(Icons.Filled.Add, contentDescription = "anadir")
+                        Icon(Icons.Filled.Add, contentDescription = "Añadir")
                     }
                 }
             },
@@ -213,34 +212,30 @@ fun AplicacionFridge() {
                 productos = listaProductos,
                 compra = listaCompra,
                 informes = listaInformes,
-                onCargarEjemplo = {
-                    guardarProductos(DatosEjemplo.productos())
-                    mostrarMensaje("datos de ejemplo cargados")
-                },
                 onGuardarProducto = { producto ->
                     guardarProductos(listaProductos + producto)
-                    mostrarMensaje("producto guardado")
+                    mostrarMensaje("Producto guardado")
                     navegar(Rutas.DESPENSA)
                 },
                 onConsumirProducto = { producto ->
                     guardarProductos(listaProductos.filter { it.id != producto.id })
-                    mostrarMensaje("producto marcado como consumido")
+                    mostrarMensaje("Producto marcado como consumido")
                 },
                 onAnadirCompraDesdeProducto = { producto ->
                     guardarCompra(listaCompra + ItemCompra(nombre = producto.nombre))
-                    mostrarMensaje("anadido a la lista de la compra")
+                    mostrarMensaje("Añadido a la lista de la compra")
                 },
                 onEliminarProducto = { producto ->
                     guardarProductos(listaProductos.filter { it.id != producto.id })
-                    mostrarMensaje("producto eliminado")
+                    mostrarMensaje("Producto eliminado")
                 },
                 onAnadirItemCompra = { nombre ->
                     guardarCompra(listaCompra + ItemCompra(nombre = nombre))
-                    mostrarMensaje("anadido a la lista de la compra")
+                    mostrarMensaje("Añadido a la lista de la compra")
                 },
                 onEliminarItemCompra = { item, comprado ->
                     guardarCompra(listaCompra.filter { it.id != item.id })
-                    mostrarMensaje(if (comprado) "item marcado como comprado" else "item eliminado")
+                    mostrarMensaje(if (comprado) "Producto marcado como comprado" else "Producto eliminado")
                 },
                 onGenerarInforme = {
                     val productosActuales = listaProductos.toList()
@@ -260,12 +255,12 @@ fun AplicacionFridge() {
     if (mostrarAyuda) {
         AlertDialog(
             onDismissRequest = { mostrarAyuda = false },
-            title = { Text("ayuda") },
+            title = { Text("Ayuda") },
             text = {
-                Text("usa inicio para ver el resumen, despensa para controlar alimentos, compra para apuntar lo que falta e informe para revisar el estado de tu despensa")
+                Text("Usa Inicio para ver el resumen, Despensa para controlar alimentos, Compra para apuntar lo que falta e Informe para revisar el estado de tu despensa.")
             },
             confirmButton = {
-                TextButton(onClick = { mostrarAyuda = false }) { Text("entendido") }
+                TextButton(onClick = { mostrarAyuda = false }) { Text("Entendido") }
             }
         )
     }
@@ -278,7 +273,6 @@ private fun ContenidoNavegacion(
     productos: List<Producto>,
     compra: List<ItemCompra>,
     informes: List<InformeDespensa>,
-    onCargarEjemplo: () -> Unit,
     onGuardarProducto: (Producto) -> Unit,
     onConsumirProducto: (Producto) -> Unit,
     onAnadirCompraDesdeProducto: (Producto) -> Unit,
@@ -302,8 +296,6 @@ private fun ContenidoNavegacion(
                 productos = productos,
                 compra = compra,
                 informes = informes,
-                onCargarEjemplo = onCargarEjemplo,
-                onNuevoProducto = { navController.navigate(Rutas.NUEVO_PRODUCTO) },
                 onVerDespensa = { onNavegar(Rutas.DESPENSA) },
                 onVerCompra = { onNavegar(Rutas.COMPRA) },
                 onVerInforme = { onNavegar(Rutas.INFORME) }
@@ -352,17 +344,17 @@ private fun generarInformeCompleto(context: android.content.Context, productos: 
     val caducados = productos.count { producto -> producto.estaCaducado() }
     val masProximo = productos.minByOrNull { producto -> producto.diasRestantes() }
     val recomendacion = when {
-        productos.isEmpty() -> "anade productos para empezar a controlar tu despensa"
-        caducados > 0 -> "revisa los productos caducados y anade recambios a la lista de la compra"
-        proximos > 0 -> "consume primero los productos proximos a caducar"
-        else -> "tu despensa esta controlada"
+        productos.isEmpty() -> "Añade productos para empezar a controlar tu despensa."
+        caducados > 0 -> "Revisa los productos caducados y añade recambios a la lista de la compra."
+        proximos > 0 -> "Consume primero los productos próximos a caducar."
+        else -> "Tu despensa está controlada."
     }
 
     val textoResumen = buildString {
-        append("producto mas proximo a caducar ")
-        append(masProximo?.nombre ?: "ninguno")
+        append("Producto más próximo a caducar: ")
+        append(masProximo?.nombre ?: "Ninguno")
         append("\n")
-        append("recomendacion de compra ")
+        append("Recomendación de compra: ")
         append(recomendacion)
     }
 
@@ -381,9 +373,9 @@ private fun generarInformeCompleto(context: android.content.Context, productos: 
 @Composable
 private fun BarraInferior(rutaActual: String, onNavegar: (String) -> Unit) {
     NavigationBar {
-        ItemBarra("inicio", Rutas.INICIO, Icons.Filled.Home, rutaActual, onNavegar)
-        ItemBarra("despensa", Rutas.DESPENSA, Icons.AutoMirrored.Filled.List, rutaActual, onNavegar)
-        ItemBarra("compra", Rutas.COMPRA, Icons.Filled.ShoppingCart, rutaActual, onNavegar)
+        ItemBarra("Inicio", Rutas.INICIO, Icons.Filled.Home, rutaActual, onNavegar)
+        ItemBarra("Despensa", Rutas.DESPENSA, Icons.AutoMirrored.Filled.List, rutaActual, onNavegar)
+        ItemBarra("Compra", Rutas.COMPRA, Icons.Filled.ShoppingCart, rutaActual, onNavegar)
     }
 }
 
@@ -465,10 +457,10 @@ private fun rutaActual(navController: NavHostController): String {
 
 private fun tituloRuta(ruta: String): String {
     return when (ruta) {
-        Rutas.DESPENSA -> "mi despensa"
-        Rutas.NUEVO_PRODUCTO -> "anadir producto"
-        Rutas.COMPRA -> "lista de la compra"
-        Rutas.INFORME -> "informe"
+        Rutas.DESPENSA -> "Mi despensa"
+        Rutas.NUEVO_PRODUCTO -> "Añadir producto"
+        Rutas.COMPRA -> "Lista de la compra"
+        Rutas.INFORME -> "Informe"
         else -> "FRIDGE"
     }
 }

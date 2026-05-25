@@ -26,7 +26,7 @@ Este documento sirve como guia rapida para revisar la entrega de FRIDGE frente a
 | Tarjetas Material | `ElevatedCard` en inicio, despensa, compra e informe |
 | Text y OutlinedTextField | Formularios de producto y compra |
 | Button, OutlinedButton y TextButton | Navegacion, filtros, formularios y dialogos |
-| FloatingActionButton | Boton de anadir producto en la pantalla de despensa |
+| FloatingActionButton | Botón de añadir producto en la pantalla de despensa |
 | Snackbar | `SnackbarHostState` y mensajes tras guardar, eliminar o generar informe |
 | Multiples pantallas | Inicio, despensa, nuevo producto, compra e informe |
 | Formulario con validacion | `PantallaNuevoProducto.kt` y `PantallaCompra.kt` |

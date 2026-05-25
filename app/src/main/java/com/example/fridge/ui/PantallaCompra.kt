@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,34 +45,41 @@ fun PantallaCompra(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        TituloSeccion("lista de la compra")
+        TituloSeccion("Lista de la compra")
 
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             OutlinedTextField(
                 value = nombreItem,
                 onValueChange = { nombreItem = it },
-                label = { Text("producto") },
+                label = { Text("Producto") },
                 singleLine = true,
                 modifier = Modifier.weight(1f)
             )
-            Button(onClick = {
-                val nombreLimpio = nombreItem.trim()
-                if (nombreLimpio.isBlank()) {
-                    mensajeError = "escribe un producto"
-                } else {
-                    mensajeError = null
-                    onAnadirItem(nombreLimpio)
-                    nombreItem = ""
-                }
-            }) {
-                Text("anadir")
+            Button(
+                onClick = {
+                    val nombreLimpio = nombreItem.trim()
+                    if (nombreLimpio.isBlank()) {
+                        mensajeError = "Escribe un producto"
+                    } else {
+                        mensajeError = null
+                        onAnadirItem(nombreLimpio)
+                        nombreItem = ""
+                    }
+                },
+                modifier = Modifier.defaultMinSize(minHeight = 56.dp)
+            ) {
+                Text("Añadir")
             }
         }
 
         if (mensajeError != null) Text(mensajeError ?: "")
 
         if (compra.isEmpty()) {
-            Text("no hay productos en la lista")
+            Text("No hay productos en la lista")
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -98,20 +107,20 @@ fun PantallaCompra(
         AlertDialog(
             onDismissRequest = { itemSeleccionado = null },
             title = { Text(item.nombre) },
-            text = { Text("elige que quieres hacer") },
+            text = { Text("Elige qué quieres hacer") },
             confirmButton = {
                 TextButton(onClick = {
                     itemSeleccionado = null
                     onEliminarItem(item, true)
-                }) { Text("comprado") }
+                }) { Text("Comprado") }
             },
             dismissButton = {
                 Column {
                     TextButton(onClick = {
                         itemSeleccionado = null
                         onEliminarItem(item, false)
-                    }) { Text("eliminar") }
-                    TextButton(onClick = { itemSeleccionado = null }) { Text("cancelar") }
+                    }) { Text("Eliminar") }
+                    TextButton(onClick = { itemSeleccionado = null }) { Text("Cancelar") }
                 }
             }
         )

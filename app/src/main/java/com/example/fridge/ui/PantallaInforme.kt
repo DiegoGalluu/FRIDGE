@@ -51,11 +51,11 @@ fun PantallaInforme(
         .distinctBy { producto -> producto.nombre.lowercase() }
         .sortedWith(compareBy<Producto> { producto -> producto.diasRestantes() }.thenBy { producto -> producto.nombre })
     val recomendacion = when {
-        productos.isEmpty() -> "Anade productos para empezar a controlar tu despensa."
+        productos.isEmpty() -> "Añade productos para empezar a controlar tu despensa."
         caducados.isNotEmpty() -> "Retira los productos caducados y apunta recambios si los necesitas."
-        proximos.isNotEmpty() -> "Consume primero los productos proximos a caducar."
+        proximos.isNotEmpty() -> "Consume primero los productos próximos a caducar."
         sugeridosCompra.isNotEmpty() -> "Revisa los productos con poca cantidad y completa la lista de la compra."
-        else -> "Tu despensa esta controlada."
+        else -> "Tu despensa está controlada."
     }
 
     Column(
@@ -65,9 +65,9 @@ fun PantallaInforme(
             .padding(horizontal = 20.dp, vertical = 18.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        TituloSeccion("informe de despensa")
+        TituloSeccion("Informe de despensa")
         Text(
-            text = "Revisa que consumir primero y que conviene apuntar en la compra.",
+            text = "Revisa qué consumir primero y qué conviene apuntar en la compra.",
             fontSize = 17.sp,
             lineHeight = 23.sp
         )
@@ -79,9 +79,9 @@ fun PantallaInforme(
                         cargando = true
                         val informe = onGenerarInforme()
                         onInformeGenerado(informe)
-                        onMostrarMensaje("informe generado")
+                        onMostrarMensaje("Informe generado")
                     } catch (e: Exception) {
-                        onMostrarMensaje("no se pudo generar el informe: ${e.message ?: "error desconocido"}")
+                        onMostrarMensaje("No se pudo generar el informe: ${e.message ?: "error desconocido"}")
                     } finally {
                         cargando = false
                     }
@@ -90,58 +90,52 @@ fun PantallaInforme(
             enabled = !cargando,
             modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 54.dp)
         ) {
-            Text(if (cargando) "actualizando" else "actualizar informe", fontSize = 16.sp)
+            Text(if (cargando) "Actualizando" else "Actualizar informe", fontSize = 16.sp)
         }
 
         val informe = ultimoInforme
         if (informe == null) {
-            Text("todavia no hay informes generados", fontSize = 17.sp)
+            Text("Todavía no hay informes generados", fontSize = 17.sp)
         } else {
             ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     modifier = Modifier.padding(18.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Text("plan para hoy", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text("Plan para hoy", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     Text(recomendacion, fontSize = 18.sp, lineHeight = 25.sp)
                     HorizontalDivider()
-                    Text("actualizado ${UtilFechas.formatearFecha(informe.fecha)}", fontSize = 15.sp)
+                    Text("Actualizado ${UtilFechas.formatearFecha(informe.fecha)}", fontSize = 15.sp)
                 }
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
-                ResumenDato("productos", informe.totalProductos.toString(), Modifier.weight(1f))
-                ResumenDato("proximos", informe.productosProximos.toString(), Modifier.weight(1f))
-                ResumenDato("caducados", informe.productosCaducados.toString(), Modifier.weight(1f))
+                ResumenDato("Productos", informe.totalProductos.toString(), Modifier.weight(1f))
+                ResumenDato("Próximos", informe.productosProximos.toString(), Modifier.weight(1f))
+                ResumenDato("Caducados", informe.productosCaducados.toString(), Modifier.weight(1f))
             }
 
             SeccionProductos(
-                titulo = "caducados",
+                titulo = "Caducados",
                 productos = caducados,
-                textoVacio = "no tienes productos caducados",
+                textoVacio = "No tienes productos caducados",
                 onAnadirCompra = onAnadirCompra
             )
 
             SeccionProductos(
-                titulo = "proximos a caducar",
+                titulo = "Próximos a caducar",
                 productos = proximos,
-                textoVacio = "no tienes productos proximos a caducar",
+                textoVacio = "No tienes productos próximos a caducar",
                 onAnadirCompra = onAnadirCompra
             )
 
             SeccionProductos(
-                titulo = "compra sugerida",
+                titulo = "Compra sugerida",
                 productos = sugeridosCompra,
-                textoVacio = "no hay sugerencias de compra ahora mismo",
+                textoVacio = "No hay sugerencias de compra ahora mismo",
                 onAnadirCompra = onAnadirCompra
             )
 
-            Text(
-                text = "El analisis interno se ejecuta al actualizar el informe y queda registrado para la entrega, pero aqui solo se muestra lo util para usar la despensa.",
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
-            )
         }
     }
 }
@@ -186,7 +180,7 @@ private fun ProductoInforme(producto: Producto, onAnadirCompra: (Producto) -> Un
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(producto.nombre, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
         Text(
-            text = "${producto.textoCaducidad()} · cantidad ${producto.cantidad} · ${producto.categoria}",
+            text = "${producto.textoCaducidad()} · Cantidad ${producto.cantidad} · ${formatearCategoria(producto.categoria)}",
             fontSize = 15.sp,
             lineHeight = 20.sp
         )
@@ -194,7 +188,21 @@ private fun ProductoInforme(producto: Producto, onAnadirCompra: (Producto) -> Un
             onClick = { onAnadirCompra(producto) },
             modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp)
         ) {
-            Text("anadir a la compra", fontSize = 15.sp)
+            Text("Añadir a la compra", fontSize = 15.sp)
         }
+    }
+}
+
+private fun formatearCategoria(categoria: String): String {
+    return when (categoria.lowercase()) {
+        "lacteos", "lácteos" -> "Lácteos"
+        "carne" -> "Carne"
+        "pescado" -> "Pescado"
+        "verdura" -> "Verdura"
+        "fruta" -> "Fruta"
+        "bebida" -> "Bebida"
+        "despensa" -> "Despensa"
+        "otro" -> "Otro"
+        else -> categoria.replaceFirstChar { letra -> letra.uppercase() }
     }
 }

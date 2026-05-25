@@ -46,12 +46,12 @@ fun PantallaNuevoProducto(
 ) {
     var nombreProducto by remember { mutableStateOf("") }
     var cantidadProducto by remember { mutableStateOf("") }
-    var categoriaProducto by remember { mutableStateOf("lacteos") }
+    var categoriaProducto by remember { mutableStateOf("Lácteos") }
     var fechaCaducidadMillis by remember { mutableStateOf<Long?>(null) }
     var mostrarCalendario by remember { mutableStateOf(false) }
     var mensajeError by remember { mutableStateOf<String?>(null) }
 
-    val categorias = listOf("lacteos", "carne", "pescado", "verdura", "fruta", "bebida", "despensa", "otro")
+    val categorias = listOf("Lácteos", "Carne", "Pescado", "Verdura", "Fruta", "Bebida", "Despensa", "Otro")
     val fechaCaducidad = fechaCaducidadMillis?.let { millis -> fechaDesdeMillis(millis) }
     val diasCaducidad = fechaCaducidad?.let { fecha -> diasHastaCaducidad(fecha) }
 
@@ -61,12 +61,12 @@ fun PantallaNuevoProducto(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        TituloSeccion("anadir producto")
+        TituloSeccion("Añadir producto")
 
         OutlinedTextField(
             value = nombreProducto,
             onValueChange = { nombreProducto = it },
-            label = { Text("nombre del producto") },
+            label = { Text("Nombre del producto") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -74,13 +74,13 @@ fun PantallaNuevoProducto(
         OutlinedTextField(
             value = cantidadProducto,
             onValueChange = { cantidadProducto = it },
-            label = { Text("cantidad") },
+            label = { Text("Cantidad") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
         )
 
-        Text("categoria")
+        Text("Categoría")
         categorias.chunked(2).forEach { fila ->
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                 fila.forEach { categoria ->
@@ -98,14 +98,14 @@ fun PantallaNuevoProducto(
             }
         }
 
-        Text("fecha de caducidad")
+        Text("Fecha de caducidad")
         OutlinedButton(
             onClick = { mostrarCalendario = true },
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Icon(Icons.Filled.DateRange, contentDescription = "calendario")
-                Text(fechaCaducidad?.let { fecha -> "caduca el ${formatearFecha(fecha)}" } ?: "elegir fecha")
+                Text(fechaCaducidad?.let { fecha -> "Caduca el ${formatearFecha(fecha)}" } ?: "Elegir fecha")
             }
         }
 
@@ -125,9 +125,9 @@ fun PantallaNuevoProducto(
                 val cantidad = cantidadProducto.toIntOrNull() ?: 1
 
                 mensajeError = when {
-                    nombreLimpio.isBlank() -> "el nombre es obligatorio"
-                    cantidad <= 0 -> "la cantidad debe ser positiva"
-                    diasCaducidad == null -> "elige una fecha de caducidad"
+                    nombreLimpio.isBlank() -> "El nombre es obligatorio"
+                    cantidad <= 0 -> "La cantidad debe ser positiva"
+                    diasCaducidad == null -> "Elige una fecha de caducidad"
                     else -> null
                 }
 
@@ -144,11 +144,11 @@ fun PantallaNuevoProducto(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("guardar")
+            Text("Guardar")
         }
 
         OutlinedButton(onClick = onCancelar, modifier = Modifier.fillMaxWidth()) {
-            Text("cancelar")
+            Text("Cancelar")
         }
     }
 
@@ -163,12 +163,12 @@ fun PantallaNuevoProducto(
                         mostrarCalendario = false
                     }
                 ) {
-                    Text("aceptar")
+                    Text("Aceptar")
                 }
             },
             dismissButton = {
                 TextButton(onClick = { mostrarCalendario = false }) {
-                    Text("cancelar")
+                    Text("Cancelar")
                 }
             }
         ) {
@@ -193,9 +193,9 @@ private fun diasHastaCaducidad(fecha: LocalDate): Int {
 
 private fun describirDiasCaducidad(dias: Int): String {
     return when {
-        dias < 0 -> "caducado hace ${abs(dias)} dias"
-        dias == 0 -> "caduca hoy"
-        dias == 1 -> "caduca en 1 dia"
-        else -> "caduca en $dias dias"
+        dias < 0 -> "Caducado hace ${abs(dias)} días"
+        dias == 0 -> "Caduca hoy"
+        dias == 1 -> "Caduca en 1 día"
+        else -> "Caduca en $dias días"
     }
 }

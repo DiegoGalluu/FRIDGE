@@ -1,6 +1,6 @@
 # FRIDGE
 
-FRIDGE es una aplicacion Android sencilla para controlar los alimentos que hay en casa, evitar tirar comida y saber que productos deben comprarse.
+FRIDGE es una aplicación Android sencilla para controlar los alimentos que hay en casa, evitar tirar comida y saber qué productos deben comprarse.
 
 El proyecto esta pensado para recuperar los resultados RA1 y RA2 de PMDM y RA1 y RA2 de PSP en una sola app util para el usuario final.
 
@@ -57,41 +57,39 @@ La app tiene cinco pantallas principales:
 
 1. Inicio
 2. Mi despensa
-3. Anadir producto
-4. Lista de compra
+3. Añadir producto
+4. Lista de la compra
 5. Informe de despensa
 
 ## Funcionalidades principales
 
-- Cargar productos de ejemplo
-- Anadir productos con formulario validado
+- Añadir productos con formulario validado
 - Ver productos en tarjetas
-- Filtrar productos por todos, proximos a caducar o caducados
+- Filtrar productos por todos, próximos a caducar o caducados
 - Marcar productos como consumidos
-- Anadir productos a la lista de la compra
+- Añadir productos a la lista de la compra
 - Eliminar productos
-- Crear items de compra
-- Marcar items como comprados
+- Crear ítems de compra
+- Marcar ítems como comprados
 - Generar informe de despensa
-- Ver un plan de consumo y compra con productos caducados, proximos y sugeridos
+- Ver un plan de consumo y compra con productos caducados, próximos y sugeridos
 
 ## Flujo de demostracion recomendado
 
 1. Abrir la app
-2. Pulsar cargar datos de ejemplo
-3. Entrar en mi despensa
+2. Pulsar la tarjeta Productos para entrar en Mi despensa
+3. Pulsar el botón flotante para añadir producto
 4. Ver las tarjetas de productos
-5. Probar el filtro proximos a caducar
-6. Pulsar el boton flotante para anadir producto
-7. Guardar un producto nuevo
-8. Pulsar un producto y anadirlo a la lista de la compra
-9. Entrar en lista de la compra
-10. Marcar un item como comprado
-11. Abrir el menu lateral
-12. Entrar en informe de despensa
-13. Pulsar actualizar informe
-14. Ensenar el plan para hoy
-15. Anadir un producto sugerido a la lista de la compra
+5. Probar el filtro Próximos
+6. Guardar un producto nuevo
+7. Pulsar un producto y añadirlo a la lista de la compra
+8. Entrar en Lista de la compra
+9. Marcar un ítem como comprado
+10. Abrir el menú lateral
+11. Entrar en Informe de despensa
+12. Pulsar Actualizar informe
+13. Enseñar el plan para hoy
+14. Añadir un producto sugerido a la lista de la compra
 
 ## Cumplimiento PMDM RA1
 
@@ -218,8 +216,8 @@ Se implementa:
 
 FRIDGE no es una demo tecnica aislada. Es una app sencilla para controlar alimentos en casa.
 
-La parte visible para el usuario permite anadir alimentos, revisar caducidades y preparar una lista de la compra.
+La parte visible para el usuario permite añadir alimentos, revisar caducidades y preparar una lista de la compra.
 
 La parte de informe aprovecha esos mismos datos para cumplir PSP. Primero exporta la despensa a CSV, despues ejecuta procesos externos con ProcessBuilder y finalmente ejecuta pruebas con hilos y corrutinas.
 
-La pantalla muestra al usuario un plan util de consumo y compra. Los detalles tecnicos quedan ejecutados y documentados en el codigo y en `RESULTADOS.md`, pero no se muestran como texto crudo dentro de la app.
+La pantalla muestra al usuario un plan útil de consumo y compra. Los detalles técnicos quedan ejecutados y documentados en el código y en `RESULTADOS.md`, pero no se muestran como texto crudo dentro de la app.

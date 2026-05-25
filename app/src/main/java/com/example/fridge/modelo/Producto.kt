@@ -30,10 +30,10 @@ data class Producto(
     fun textoCaducidad(): String {
         val dias = diasRestantes()
         return when {
-            dias < 0 -> "caducado hace ${abs(dias)} dias"
-            dias == 0 -> "caduca hoy"
-            dias == 1 -> "caduca en 1 dia"
-            else -> "caduca en $dias dias"
+            dias < 0 -> "Caducado hace ${abs(dias)} días"
+            dias == 0 -> "Caduca hoy"
+            dias == 1 -> "Caduca en 1 día"
+            else -> "Caduca en $dias días"
         }
     }
 
