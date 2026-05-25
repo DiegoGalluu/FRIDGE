@@ -3,8 +3,11 @@ package com.example.fridge
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,7 +51,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -393,6 +395,16 @@ private fun RowScope.ItemBarra(
 ) {
     val seleccionado = rutaActual == ruta
     val colorPrincipal = MaterialTheme.colorScheme.primary
+    val fondoIndicador by animateColorAsState(
+        targetValue = if (seleccionado) colorPrincipal else Color.Transparent,
+        animationSpec = tween(durationMillis = 140),
+        label = "fondoIndicadorNavbar"
+    )
+    val colorIcono by animateColorAsState(
+        targetValue = if (seleccionado) Color.White else colorPrincipal,
+        animationSpec = tween(durationMillis = 140),
+        label = "colorIconoNavbar"
+    )
 
     Column(
         modifier = Modifier
@@ -412,7 +424,7 @@ private fun RowScope.ItemBarra(
             modifier = Modifier
                 .size(40.dp)
                 .background(
-                    color = if (seleccionado) colorPrincipal else Color.Transparent,
+                    color = fondoIndicador,
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center
@@ -420,7 +432,7 @@ private fun RowScope.ItemBarra(
             Icon(
                 imageVector = icono,
                 contentDescription = texto,
-                tint = if (seleccionado) Color.White else colorPrincipal,
+                tint = colorIcono,
                 modifier = Modifier.size(22.dp)
             )
         }
