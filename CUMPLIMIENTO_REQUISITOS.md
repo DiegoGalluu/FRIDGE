@@ -30,7 +30,7 @@ Este documento sirve como guia rapida para revisar la entrega de FRIDGE frente a
 | Snackbar | `SnackbarHostState` y mensajes tras guardar, eliminar o generar informe |
 | Multiples pantallas | Inicio, despensa, nuevo producto, compra e informe |
 | Formulario con validacion | `PantallaNuevoProducto.kt` y `PantallaCompra.kt` |
-| Lista de elementos | `LazyColumn` en despensa y lista de compra |
+| Lista de elementos | `LazyColumn` en despensa y lista de la compra |
 
 ## PSP RA1 - Procesos y concurrencia
 

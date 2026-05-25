@@ -57,7 +57,7 @@ fun PantallaInicio(
         }
 
         FilaDosTarjetas("productos guardados", productos.size.toString(), "caducan pronto", urgentes.toString())
-        FilaDosTarjetas("en lista de compra", compra.size.toString(), "informes generados", informes.size.toString())
+        FilaDosTarjetas("en lista de la compra", compra.size.toString(), "informes generados", informes.size.toString())
 
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -68,7 +68,7 @@ fun PantallaInicio(
             Text("ver despensa")
         }
         OutlinedButton(onClick = onVerCompra, modifier = Modifier.fillMaxWidth()) {
-            Text("lista de compra")
+            Text("lista de la compra")
         }
         OutlinedButton(onClick = onVerInforme, modifier = Modifier.fillMaxWidth()) {
             Text("generar informe")

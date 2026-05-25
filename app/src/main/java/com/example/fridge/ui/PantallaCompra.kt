@@ -43,7 +43,7 @@ fun PantallaCompra(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        TituloSeccion("lista de compra")
+        TituloSeccion("lista de la compra")
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(

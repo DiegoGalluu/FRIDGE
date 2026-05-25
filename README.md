@@ -68,7 +68,7 @@ La app tiene cinco pantallas principales:
 - Ver productos en tarjetas
 - Filtrar productos por todos, caducan pronto o caducados
 - Marcar productos como consumidos
-- Anadir productos a la lista de compra
+- Anadir productos a la lista de la compra
 - Eliminar productos
 - Crear items de compra
 - Marcar items como comprados
@@ -84,8 +84,8 @@ La app tiene cinco pantallas principales:
 5. Probar el filtro caducan pronto
 6. Pulsar el boton flotante para anadir producto
 7. Guardar un producto nuevo
-8. Pulsar un producto y anadirlo a la lista de compra
-9. Entrar en lista de compra
+8. Pulsar un producto y anadirlo a la lista de la compra
+9. Entrar en lista de la compra
 10. Marcar un item como comprado
 11. Abrir el menu lateral
 12. Entrar en informe de despensa
@@ -218,7 +218,7 @@ Se implementa:
 
 FRIDGE no es una demo tecnica aislada. Es una app sencilla para controlar alimentos en casa.
 
-La parte visible para el usuario permite anadir alimentos, revisar caducidades y preparar una lista de compra.
+La parte visible para el usuario permite anadir alimentos, revisar caducidades y preparar una lista de la compra.
 
 La parte de informe aprovecha esos mismos datos para cumplir PSP. Primero exporta la despensa a CSV, despues ejecuta procesos externos con ProcessBuilder y finalmente ejecuta pruebas con hilos y corrutinas.
 

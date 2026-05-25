@@ -156,7 +156,7 @@ fun AplicacionFridge() {
                     scope.launch { drawerState.close() }
                     navController.navigate(Rutas.NUEVO_PRODUCTO)
                 }
-                DrawerItem("lista de compra", Icons.Filled.ShoppingCart, rutaActual == Rutas.COMPRA) {
+                DrawerItem("lista de la compra", Icons.Filled.ShoppingCart, rutaActual == Rutas.COMPRA) {
                     scope.launch { drawerState.close() }
                     navegar(Rutas.COMPRA)
                 }
@@ -215,7 +215,7 @@ fun AplicacionFridge() {
                 },
                 onAnadirCompraDesdeProducto = { producto ->
                     guardarCompra(listaCompra + ItemCompra(nombre = producto.nombre))
-                    mostrarMensaje("anadido a la lista de compra")
+                    mostrarMensaje("anadido a la lista de la compra")
                 },
                 onEliminarProducto = { producto ->
                     guardarProductos(listaProductos.filter { it.id != producto.id })
@@ -223,7 +223,7 @@ fun AplicacionFridge() {
                 },
                 onAnadirItemCompra = { nombre ->
                     guardarCompra(listaCompra + ItemCompra(nombre = nombre))
-                    mostrarMensaje("anadido a la lista de compra")
+                    mostrarMensaje("anadido a la lista de la compra")
                 },
                 onEliminarItemCompra = { item, comprado ->
                     guardarCompra(listaCompra.filter { it.id != item.id })
@@ -338,7 +338,7 @@ private fun generarInformeCompleto(context: android.content.Context, productos: 
     val masUrgente = productos.minByOrNull { producto -> producto.diasRestantes() }
     val recomendacion = when {
         productos.isEmpty() -> "anade productos para empezar a controlar tu despensa"
-        caducados > 0 -> "revisa los productos caducados y anade recambios a la lista de compra"
+        caducados > 0 -> "revisa los productos caducados y anade recambios a la lista de la compra"
         urgentes > 0 -> "consume primero los productos que caducan pronto"
         else -> "tu despensa esta controlada"
     }
@@ -409,7 +409,7 @@ private fun tituloRuta(ruta: String): String {
     return when (ruta) {
         Rutas.DESPENSA -> "mi despensa"
         Rutas.NUEVO_PRODUCTO -> "anadir producto"
-        Rutas.COMPRA -> "lista de compra"
+        Rutas.COMPRA -> "lista de la compra"
         Rutas.INFORME -> "informe"
         else -> "FRIDGE"
     }

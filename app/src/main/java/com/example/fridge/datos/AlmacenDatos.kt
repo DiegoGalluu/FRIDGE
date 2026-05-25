@@ -34,14 +34,14 @@ object AlmacenDatos {
         return lista
     }
 
-    // guarda la lista de compra en formato json
+    // guarda la lista de la compra en formato json
     fun guardarCompra(context: Context, compra: List<ItemCompra>) {
         val array = JSONArray()
         compra.forEach { item -> array.put(item.aJson()) }
         prefs(context).edit().putString(CLAVE_COMPRA, array.toString()).apply()
     }
 
-    // carga la lista de compra guardada
+    // carga la lista de la compra guardada
     fun obtenerCompra(context: Context): List<ItemCompra> {
         val texto = prefs(context).getString(CLAVE_COMPRA, "[]") ?: "[]"
         val array = JSONArray(texto)
