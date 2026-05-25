@@ -9,10 +9,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +30,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.fridge.modelo.Producto
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import kotlin.math.abs
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaNuevoProducto(
     onGuardar: (Producto) -> Unit,
@@ -32,10 +47,13 @@ fun PantallaNuevoProducto(
     var nombreProducto by remember { mutableStateOf("") }
     var cantidadProducto by remember { mutableStateOf("") }
     var categoriaProducto by remember { mutableStateOf("lacteos") }
-    var diasCaducidad by remember { mutableStateOf("") }
+    var fechaCaducidadMillis by remember { mutableStateOf<Long?>(null) }
+    var mostrarCalendario by remember { mutableStateOf(false) }
     var mensajeError by remember { mutableStateOf<String?>(null) }
 
     val categorias = listOf("lacteos", "carne", "pescado", "verdura", "fruta", "bebida", "despensa", "otro")
+    val fechaCaducidad = fechaCaducidadMillis?.let { millis -> fechaDesdeMillis(millis) }
+    val diasCaducidad = fechaCaducidad?.let { fecha -> diasHastaCaducidad(fecha) }
 
     Column(
         modifier = modifier
@@ -80,14 +98,20 @@ fun PantallaNuevoProducto(
             }
         }
 
-        OutlinedTextField(
-            value = diasCaducidad,
-            onValueChange = { diasCaducidad = it },
-            label = { Text("caduca en dias") },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        Text("fecha de caducidad")
+        OutlinedButton(
+            onClick = { mostrarCalendario = true },
             modifier = Modifier.fillMaxWidth()
-        )
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Icon(Icons.Filled.DateRange, contentDescription = "calendario")
+                Text(fechaCaducidad?.let { fecha -> "caduca el ${formatearFecha(fecha)}" } ?: "elegir fecha")
+            }
+        }
+
+        if (diasCaducidad != null) {
+            Text(describirDiasCaducidad(diasCaducidad))
+        }
 
         if (mensajeError != null) {
             Text(text = mensajeError ?: "", color = androidx.compose.ui.graphics.Color(0xFFC62828))
@@ -99,12 +123,11 @@ fun PantallaNuevoProducto(
             onClick = {
                 val nombreLimpio = nombreProducto.trim()
                 val cantidad = cantidadProducto.toIntOrNull() ?: 1
-                val dias = diasCaducidad.toIntOrNull() ?: 7
 
                 mensajeError = when {
                     nombreLimpio.isBlank() -> "el nombre es obligatorio"
                     cantidad <= 0 -> "la cantidad debe ser positiva"
-                    dias < 0 -> "los dias no pueden ser negativos"
+                    diasCaducidad == null -> "elige una fecha de caducidad"
                     else -> null
                 }
 
@@ -114,7 +137,7 @@ fun PantallaNuevoProducto(
                             nombre = nombreLimpio,
                             cantidad = cantidad,
                             categoria = categoriaProducto,
-                            diasCaducidad = dias
+                            diasCaducidad = diasCaducidad ?: 0
                         )
                     )
                 }
@@ -127,5 +150,52 @@ fun PantallaNuevoProducto(
         OutlinedButton(onClick = onCancelar, modifier = Modifier.fillMaxWidth()) {
             Text("cancelar")
         }
+    }
+
+    if (mostrarCalendario) {
+        val estadoCalendario = rememberDatePickerState(initialSelectedDateMillis = fechaCaducidadMillis)
+        DatePickerDialog(
+            onDismissRequest = { mostrarCalendario = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        fechaCaducidadMillis = estadoCalendario.selectedDateMillis
+                        mostrarCalendario = false
+                    }
+                ) {
+                    Text("aceptar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { mostrarCalendario = false }) {
+                    Text("cancelar")
+                }
+            }
+        ) {
+            DatePicker(state = estadoCalendario)
+        }
+    }
+}
+
+private val FormatoFechaCaducidad: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+private fun fechaDesdeMillis(millis: Long): LocalDate {
+    return Instant.ofEpochMilli(millis).atZone(ZoneOffset.UTC).toLocalDate()
+}
+
+private fun formatearFecha(fecha: LocalDate): String {
+    return fecha.format(FormatoFechaCaducidad)
+}
+
+private fun diasHastaCaducidad(fecha: LocalDate): Int {
+    return ChronoUnit.DAYS.between(LocalDate.now(), fecha).toInt()
+}
+
+private fun describirDiasCaducidad(dias: Int): String {
+    return when {
+        dias < 0 -> "caducado hace ${abs(dias)} dias"
+        dias == 0 -> "caduca hoy"
+        dias == 1 -> "caduca en 1 dia"
+        else -> "caduca en $dias dias"
     }
 }
